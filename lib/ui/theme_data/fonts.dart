@@ -5,6 +5,12 @@ abstract class FontThemeData {
   static const Color teal = Color.fromRGBO(16, 185, 129, 1.0);
 
   // Common Components
+  static const TextStyle partnerHeading = TextStyle(
+    fontSize: 20.0,
+    fontWeight: FontWeight.w700,
+    color: Color.fromRGBO(0, 0, 0, 1.0),
+  );
+
   static const TextStyle inputLabel = TextStyle(
     fontSize: 12.0,
     fontWeight: FontWeight.w700,
@@ -13,14 +19,8 @@ abstract class FontThemeData {
 
   static const TextStyle jobItemName = TextStyle(
     fontSize: 14.0,
-    fontWeight: FontWeight.w400,
+    fontWeight: FontWeight.w700,
     color: grey700,
-  );
-
-  static const TextStyle jobItemCompanyName = TextStyle(
-    fontSize: 10.0,
-    fontWeight: FontWeight.w400,
-    color: Color.fromRGBO(59, 130, 246, 1.0),
   );
 
   static const TextStyle jobItemTypeAndLocation = TextStyle(
@@ -29,16 +29,16 @@ abstract class FontThemeData {
     color: Color.fromRGBO(80, 80, 80, 1.0),
   );
 
-  static const TextStyle jobItemSalary = TextStyle(
-    fontSize: 14.0,
-    fontWeight: FontWeight.w700,
-    color: grey700,
-  );
-
   static const TextStyle jobItemMomentsAgo = TextStyle(
     fontSize: 10.0,
     fontWeight: FontWeight.w700,
     color: grey700,
+  );
+
+  static const TextStyle jobItemUnreadNotifications = TextStyle(
+    fontSize: 10.0,
+    fontWeight: FontWeight.w700,
+    color: Colors.white,
   );
 
   static const TextStyle notificationMsgText = TextStyle(
@@ -69,25 +69,6 @@ abstract class FontThemeData {
   static const TextStyle authBtnGoogle =
       TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.black);
 
-  /// Menu
-  static const TextStyle menuItem = TextStyle(
-    fontSize: 12,
-    fontWeight: FontWeight.w400,
-    color: Color.fromRGBO(125, 123, 123, 1.0),
-  );
-
-  static const TextStyle menuItemActive = TextStyle(
-    fontSize: 12,
-    fontWeight: FontWeight.w400,
-    color: Color.fromRGBO(93, 216, 171, 1.0),
-  );
-
-  static const TextStyle menuItemNotifications = TextStyle(
-    fontSize: 14,
-    fontWeight: FontWeight.w700,
-    color: Colors.white,
-  );
-
   /// Homepage
   static const TextStyle welcomeTitle =
       TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: Colors.white);
@@ -97,6 +78,9 @@ abstract class FontThemeData {
 
   static const TextStyle sectionTitles =
       TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: Colors.black);
+
+  static const TextStyle sectionTitleSecondary =
+      TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: Colors.black);
 
   /// Profile Page
   static const TextStyle profilePagePrimaryTitle =

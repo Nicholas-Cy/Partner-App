@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../theme_data/fonts.dart';
 import '../theme_data/inputs.dart';
+import '../../components/login-register-button.dart';
 import '../homepage/index.dart';
 
 class LoginPage extends StatelessWidget {
@@ -107,9 +108,23 @@ class LoginPage extends StatelessWidget {
                         ),
                       ),
                     ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 10.0),
+                      child: SizedBox(
+                        width: width,
+                        child: InkWell(
+                          child: Text(
+                            "Forgot Password?",
+                            style: GoogleFonts.dmSans(
+                                textStyle: FontThemeData.btnText),
+                            textAlign: TextAlign.left,
+                          ),
+                        ),
+                      ),
+                    ),
                     ElevatedButton(
                       onPressed: () {
-                        Navigator.push(context,
+                        Navigator.pushReplacement(context,
                             MaterialPageRoute(builder: (context) {
                           return const HomePage();
                         }));
@@ -138,9 +153,14 @@ class LoginPage extends StatelessWidget {
                 ),
               ),
             ),
-            const Positioned(
+            Positioned(
               bottom: 30.0,
-              child: Text("Register"),
+              child: LoginRegisterButton(
+                key: UniqueKey(),
+                onChange: () {
+                  // TODO: Add Switch Change Logic here
+                },
+              ),
             ),
           ],
         ),
