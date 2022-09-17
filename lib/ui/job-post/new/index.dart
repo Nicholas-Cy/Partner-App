@@ -8,6 +8,7 @@ import '../../theme_data/inputs.dart';
 class NewJobPost extends StatelessWidget {
   NewJobPost({super.key});
 
+  final industryTypes = ['Information Technology', 'Healthcare', 'Shipping'];
   final jobTypes = ['Full-Time', 'Part-Time', 'Internship'];
   final jobDurations = ['2 Weeks', '4 Weeks', '2 Months'];
 
@@ -224,6 +225,48 @@ class NewJobPost extends StatelessWidget {
                               color: Colors.grey, fontSize: 15.0),
                           enabledBorder: InputsThemeData.inputForm,
                           focusedBorder: InputsThemeData.inputFormSelected,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              // Industry Type
+              SizedBox(
+                width: width - 40.0,
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                    top: 10.0,
+                    bottom: 10.0,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Industry",
+                        style: GoogleFonts.dmSans(
+                            textStyle: FontThemeData.inputLabel),
+                      ),
+                      const SizedBox(height: 2.0),
+                      Container(
+                        width: width,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(
+                            color: const Color.fromRGBO(51, 65, 85, 1.0)
+                                .withOpacity(0.2),
+                            width: 2.0,
+                          ),
+                        ),
+                        child: DropdownButton(
+                          isExpanded: true,
+                          items: industryTypes.map((String type) {
+                            return DropdownMenuItem(
+                              value: type,
+                              child: Text(type),
+                            );
+                          }).toList(),
+                          onChanged: (value) {},
                         ),
                       ),
                     ],
