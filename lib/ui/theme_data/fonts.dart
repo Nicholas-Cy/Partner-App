@@ -53,6 +53,37 @@ abstract class FontThemeData {
     color: teal,
   );
 
+  // Job Post
+  static const TextStyle jobPostSecondHeading =
+      TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: grey700);
+
+  static const TextStyle jobPostSecondHeadingBold =
+      TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: grey700);
+
+  static const TextStyle jobPostThirdHeading =
+      TextStyle(fontSize: 10, fontWeight: FontWeight.w400, color: grey700);
+
+  static const TextStyle jobPostName =
+      TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: grey700);
+
+  static const TextStyle jobPostDeadlineDate =
+      TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: grey700);
+
+  static const TextStyle jobPostAttributesTitle =
+      TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: grey700);
+
+  static const TextStyle jobPostAttributesText =
+      TextStyle(fontSize: 11, fontWeight: FontWeight.w400, color: grey700);
+
+  static const TextStyle jobPostText =
+      TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: grey700);
+
+  static const TextStyle jobPostSalaryRangeTitle =
+      TextStyle(fontSize: 12, fontWeight: FontWeight.w400, color: grey700);
+
+  static const TextStyle jobPostSalaryRangeText =
+      TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: Colors.black);
+
   /// Login Page
   static const TextStyle authHeading =
       TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: Colors.black);
@@ -83,11 +114,11 @@ abstract class FontThemeData {
       TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: Colors.black);
 
   /// Profile Page
-  static const TextStyle profilePagePrimaryTitle =
-      TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: grey700);
+  static const TextStyle profileName =
+      TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: grey700);
 
-  static const TextStyle profilePageSecondaryTitle =
-      TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: grey700);
+  static const TextStyle profileOccupation =
+      TextStyle(fontSize: 12, fontWeight: FontWeight.w400, color: grey700);
 
   static const TextStyle profilePageOccupation =
       TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: grey700);
