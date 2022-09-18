@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../theme_data/fonts.dart';
 import '../theme_data/inputs.dart';
 import '../../components/login-register-button.dart';
-import '../homepage/index.dart';
+import '../layout.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -126,7 +126,7 @@ class LoginPage extends StatelessWidget {
                       onPressed: () {
                         Navigator.pushReplacement(context,
                             MaterialPageRoute(builder: (context) {
-                          return const HomePage();
+                          return LayoutPage(key: GlobalKey());
                         }));
                       },
                       style: ElevatedButton.styleFrom(
