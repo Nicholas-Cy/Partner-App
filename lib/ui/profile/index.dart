@@ -9,9 +9,12 @@ class ProfilePage extends StatelessWidget {
   ProfilePage({super.key});
 
   final companySizes = [
-    'Less than 10 Employees',
-    '10 - 25 Employees',
-    '50 - 100 Employees'
+    '< 10',
+    '10 - 20',
+    '50 - 100',
+    '100 - 500',
+    '500 - 1000',
+    '1000+'
   ];
 
   @override

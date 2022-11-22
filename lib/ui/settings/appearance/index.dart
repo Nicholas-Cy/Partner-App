@@ -72,6 +72,7 @@ class AppearancePage extends StatelessWidget {
                   SizedBox(
                     height: 30.0,
                     child: CustomToggleSwitch(
+                      value: true,
                       key: UniqueKey(),
                       onChange: () {
                         // TODO: Add Switch Change Logic here

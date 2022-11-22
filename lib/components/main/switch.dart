@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
 class CustomToggleSwitch extends StatefulWidget {
+  final bool value;
   final Function onChange;
   const CustomToggleSwitch({
     Key? key,
+    required this.value,
     required this.onChange,
   }) : super(key: key);
 
@@ -22,6 +24,7 @@ class _CustomToggleSwitchState extends State<CustomToggleSwitch>
   void initState() {
     super.initState();
 
+    isChecked = widget.value;
     _animationController =
         AnimationController(vsync: this, duration: _duration);
 
@@ -33,6 +36,9 @@ class _CustomToggleSwitchState extends State<CustomToggleSwitch>
           curve: Curves.bounceOut,
           reverseCurve: Curves.bounceIn),
     );
+    if (isChecked) {
+      _animationController.forward();
+    }
   }
 
   @override

@@ -423,7 +423,7 @@ class NewJobPost extends StatelessWidget {
                             ElevatedButton(
                               onPressed: () {},
                               style: ElevatedButton.styleFrom(
-                                primary:
+                                backgroundColor:
                                     const Color.fromRGBO(93, 216, 171, 1.0),
                               ),
                               child: Row(

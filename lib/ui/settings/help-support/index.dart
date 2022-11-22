@@ -1,14 +1,23 @@
+import 'package:beamcoda_jobs_partners_flutter/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../theme_data/fonts.dart';
 
 class HelpSupportPage extends StatelessWidget {
   const HelpSupportPage({super.key});
 
+  _launchURL(Uri url) async {
+    if (!await launchUrl(url)) {
+      throw 'Could not launch $url';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
+    final contactUs = Uri.parse("${AppConstants.STATIC_WEB_URL}/contact-us");
     return Scaffold(
       appBar: AppBar(
         title: Row(
@@ -56,21 +65,17 @@ class HelpSupportPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 30.0),
-              SizedBox(
-                width: width - 40.0,
-                child: Text(
-                  "We’re looking forward to helping you, please let us know your concerns via:",
-                  style:
-                      GoogleFonts.dmSans(textStyle: FontThemeData.settingsText),
-                ),
-              ),
-              const SizedBox(height: 10.0),
-              SizedBox(
-                width: width - 40.0,
-                child: Text(
-                  "Email: hello@beamcoda.com",
-                  style:
-                      GoogleFonts.dmSans(textStyle: FontThemeData.settingsText),
+              InkWell(
+                onTap: () {
+                  _launchURL(contactUs);
+                },
+                child: SizedBox(
+                  width: width - 140.0,
+                  child: Text(
+                    "Contact Us",
+                    style: GoogleFonts.dmSans(
+                        textStyle: FontThemeData.settingsListItemPrimary),
+                  ),
                 ),
               ),
             ],

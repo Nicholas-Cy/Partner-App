@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 
 import '../../ui/theme_data/fonts.dart';
 import '../../ui/job-post/index.dart';
+import '../../types/jobpostcompact.dart';
 
 class JobPost extends StatelessWidget {
-  const JobPost({super.key});
+  final JobPostCompact jobPost;
+  const JobPost({required Key key, required this.jobPost}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +53,9 @@ class JobPost extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.all(2.0),
                     child: Text(
-                      "10+",
+                      (jobPost.applicantsCount > 99)
+                          ? "99+"
+                          : jobPost.applicantsCount.toString(),
                       style: GoogleFonts.dmSans(
                           textStyle: FontThemeData.jobItemUnreadNotifications),
                     ),
@@ -62,7 +67,7 @@ class JobPost extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Senior Web Developer",
+                  jobPost.title,
                   style: GoogleFonts.dmSans(
                     textStyle: FontThemeData.jobItemName,
                   ),
@@ -72,13 +77,16 @@ class JobPost extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(
-                      children: const [
-                        Icon(Icons.location_on, size: 13.0),
-                        Text("S.A, California"),
+                      children: [
+                        const Icon(Icons.location_on, size: 13.0),
+                        Text(jobPost.location),
                       ],
                     ),
                     Text(
-                      "1 hour ago",
+                      DateFormat('d M yyyy').format(
+                        DateFormat('dd-mm-yyyy hh:mm:ss')
+                            .parse(jobPost.timeAgo),
+                      ),
                       style: GoogleFonts.dmSans(
                         textStyle: FontThemeData.jobItemMomentsAgo,
                       ),

@@ -1,5 +1,8 @@
+import 'package:beamcoda_jobs_partners_flutter/data/auth.dart';
+import 'package:beamcoda_jobs_partners_flutter/ui/authentication/login.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 import './theme_data/fonts.dart';
 import './job-post/new/index.dart';
@@ -31,26 +34,65 @@ class _LayoutPageState extends State<LayoutPage> {
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<AuthProvider>(context);
     double width = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
         title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Image(
-              width: 85.0,
-              image: AssetImage('assets/images/logo.png'),
+            Row(
+              children: [
+                const Image(
+                  width: 85.0,
+                  image: AssetImage('assets/images/logo.png'),
+                ),
+                const SizedBox(width: 10.0),
+                Container(
+                  width: 1.0,
+                  height: 20.0,
+                  decoration: const BoxDecoration(color: Colors.black),
+                ),
+                const SizedBox(width: 10.0),
+                Text(
+                  "PARTNER",
+                  style: GoogleFonts.dmSans(
+                      textStyle: FontThemeData.partnerHeading),
+                ),
+              ],
             ),
-            const SizedBox(width: 10.0),
-            Container(
-              width: 1.0,
-              height: 20.0,
-              decoration: const BoxDecoration(color: Colors.black),
-            ),
-            const SizedBox(width: 10.0),
-            Text(
-              "PARTNER",
-              style:
-                  GoogleFonts.dmSans(textStyle: FontThemeData.partnerHeading),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.transparent,
+                backgroundColor: Colors.transparent,
+                elevation: 0.0,
+              ),
+              onPressed: () {
+                userProvider.logout();
+                Navigator.of(context).pop();
+                Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => const LoginPage(),
+                    ),
+                    (Route<dynamic> route) => false);
+              },
+              child: Row(
+                children: [
+                  const Icon(
+                    Icons.logout,
+                    color: Colors.black,
+                    size: 15.0,
+                  ),
+                  const SizedBox(width: 5.0),
+                  Text(
+                    'Logout',
+                    style: GoogleFonts.dmSans(
+                      fontSize: 12.0,
+                      color: Colors.black,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -71,7 +113,8 @@ class _LayoutPageState extends State<LayoutPage> {
                   children: [
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        primary: Colors.white,
+                        foregroundColor: Colors.white,
+                        backgroundColor: Colors.white,
                       ),
                       onPressed: () {
                         Navigator.of(context).push(

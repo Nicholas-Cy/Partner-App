@@ -1,5 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.beamcoda_jobs_partners_flutter">
+    package="com.example.beamcoda_jobs_partners_flutter">    
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
    <application
         android:label="beamcoda_jobs_partners_flutter"
         android:name="${applicationName}"

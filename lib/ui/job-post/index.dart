@@ -14,15 +14,8 @@ class ViewJobPost extends StatefulWidget {
 
 class _ViewJobPostState extends State<ViewJobPost>
     with TickerProviderStateMixin {
-  late TabController _tabController;
-
   @override
   void initState() {
-    _tabController = TabController(
-      length: 2,
-      vsync: this,
-      animationDuration: const Duration(milliseconds: 200),
-    );
     super.initState();
   }
 
@@ -231,58 +224,28 @@ class _ViewJobPostState extends State<ViewJobPost>
                 ],
               ),
               const SizedBox(height: 20.0),
-              TabBar(
-                controller: _tabController,
-                tabs: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10.0),
-                    child: Text(
-                      "Applications",
-                      style: GoogleFonts.dmSans(
-                          textStyle: FontThemeData.btnBlackText),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10.0),
-                    child: Text(
-                      "Activity",
-                      style: GoogleFonts.dmSans(
-                          textStyle: FontThemeData.btnBlackText),
-                    ),
-                  ),
-                ],
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10.0),
+                child: Text(
+                  "Applications",
+                  style:
+                      GoogleFonts.dmSans(textStyle: FontThemeData.btnBlackText),
+                ),
               ),
               SizedBox(
                 height: 250.0,
-                child: TabBarView(
-                  controller: _tabController,
-                  children: [
-                    SingleChildScrollView(
-                      clipBehavior: Clip.none,
-                      physics: const BouncingScrollPhysics(),
-                      child: Column(
-                        children: const [
-                          JobApplicantListItem(),
-                          JobApplicantListItem(),
-                          JobApplicantListItem(),
-                          JobApplicantListItem(),
-                          JobApplicantListItem(),
-                        ],
-                      ),
-                    ),
-                    SingleChildScrollView(
-                      clipBehavior: Clip.none,
-                      physics: const BouncingScrollPhysics(),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
-                          SizedBox(height: 20.0),
-                          JobActivityListItem(),
-                          JobActivityListItem(),
-                        ],
-                      ),
-                    ),
-                  ],
+                child: SingleChildScrollView(
+                  clipBehavior: Clip.none,
+                  physics: const BouncingScrollPhysics(),
+                  child: Column(
+                    children: const [
+                      JobApplicantListItem(),
+                      JobApplicantListItem(),
+                      JobApplicantListItem(),
+                      JobApplicantListItem(),
+                      JobApplicantListItem(),
+                    ],
+                  ),
                 ),
               ),
               const SizedBox(height: 60.0),
@@ -307,7 +270,8 @@ class _ViewJobPostState extends State<ViewJobPost>
             children: [
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  primary: const Color.fromRGBO(21, 192, 182, 1.0),
+                  foregroundColor: const Color.fromRGBO(21, 192, 182, 1.0),
+                  backgroundColor: const Color.fromRGBO(21, 192, 182, 1.0),
                   padding: const EdgeInsets.symmetric(
                       vertical: 12.0, horizontal: 25.0),
                   shape: RoundedRectangleBorder(
@@ -332,7 +296,8 @@ class _ViewJobPostState extends State<ViewJobPost>
               const SizedBox(width: 5.0),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.red,
+                  foregroundColor: Colors.red,
+                  backgroundColor: Colors.red,
                   padding: const EdgeInsets.symmetric(
                       vertical: 12.0, horizontal: 25.0),
                   shape: RoundedRectangleBorder(
