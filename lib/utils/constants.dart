@@ -1,7 +1,7 @@
 // ignore_for_file: constant_identifier_names
 
 class AppConstants {
-  static const String API_URL = "http://192.168.8.174.nip.io:8000";
+  static const String API_URL = "http://192.168.8.173.nip.io:8000";
   static const String STATIC_WEB_URL = "http://codajobs.beamcoda.com";
 
   // Partner
@@ -16,6 +16,21 @@ class AppConstants {
 
   // Jobs
   static const String JOBS_INDEX = "/api/jobs/partner";
+  static const String JOBS_RETRIEVAL = "/api/jobs/view";
+  static const String NEW_JOB = "/api/jobs/new";
+  static const String SHORTLIST_APPLICANT = "/api/job-applications/shortlist";
+
+  // Skills
+  static const String SKILLS_INDEX = "/api/skills/autocomplete";
+
+  // Categories
+  static const String CATEGORIES_INDEX = "/api/categories/all";
+
+  // Job Types
+  static const String JOBTYPES_INDEX = "/api/job-types/all";
+
+  // Post Durations
+  static const String POSTDURATIONS_INDEX = "/api/post-durations/partner";
 
   // Subscription
   static const String PACKAGES_INDEX = "/api/packages/all";

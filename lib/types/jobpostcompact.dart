@@ -16,7 +16,9 @@ class JobPostCompact {
     return JobPostCompact(
       id: json['id'],
       title: json['job_title'],
-      location: json['city'] + ', ' + json['country'],
+      location: (json['is_remote'] == 1)
+          ? 'Remote'
+          : json['city'] + ', ' + json['country'],
       timeAgo: json['created_at'],
       applicantsCount: json['applicants_count'],
     );

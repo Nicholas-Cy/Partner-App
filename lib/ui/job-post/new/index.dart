@@ -1,20 +1,167 @@
+import 'package:beamcoda_jobs_partners_flutter/data/auth.dart';
+import 'package:beamcoda_jobs_partners_flutter/data/job.dart';
+import 'package:beamcoda_jobs_partners_flutter/types/category.dart';
+import 'package:beamcoda_jobs_partners_flutter/types/job_types.dart';
+import 'package:beamcoda_jobs_partners_flutter/types/new_post.dart';
+import 'package:beamcoda_jobs_partners_flutter/types/post_duration.dart';
+import 'package:beamcoda_jobs_partners_flutter/types/skill.dart';
+import 'package:beamcoda_jobs_partners_flutter/utils/constants.dart';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 
 import '../../theme_data/fonts.dart';
 import '../../theme_data/inputs.dart';
 
-class NewJobPost extends StatelessWidget {
+class NewJobPost extends StatefulWidget {
   NewJobPost({super.key});
 
-  final industryTypes = ['Information Technology', 'Healthcare', 'Shipping'];
-  final jobTypes = ['Full-Time', 'Part-Time', 'Internship'];
-  final jobDurations = ['2 Weeks', '4 Weeks', '2 Months'];
+  @override
+  State<NewJobPost> createState() => _NewJobPostState();
+}
+
+class _NewJobPostState extends State<NewJobPost> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  void saveJob(BuildContext ctx) async {
+    final userProvider = Provider.of<AuthProvider>(ctx, listen: false);
+    final jobProvider = Provider.of<JobProvider>(ctx, listen: false);
+    String? token = await userProvider.getToken();
+
+    final partnerId = userProvider.partner.id;
+    final Uri url = Uri.parse("${AppConstants.API_URL}${AppConstants.NEW_JOB}");
+    String skillsList =
+        jobProvider.jobSkills.map((skill) => skill.id).toString();
+    skillsList = skillsList.substring(1, skillsList.length - 1);
+    final response = await http.post(
+      url,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token'
+      },
+      body: jsonEncode({
+        'partner_id': partnerId,
+        'job_title': jobProvider.newPost.title,
+        'is_remote': jobProvider.newPost.isRemote,
+        'city': jobProvider.newPost.city,
+        'country': jobProvider.newPost.country,
+        'category_id': jobProvider.newPost.category,
+        'no_pay_range': jobProvider.newPost.noPayRange,
+        'min_salary_range': jobProvider.newPost.minSalary,
+        'max_salary_range': jobProvider.newPost.maxSalary,
+        'job_type_id': jobProvider.newPost.jobType,
+        'desc': jobProvider.newPost.desc,
+        'skills': skillsList,
+        'job_active_duration': jobProvider.newPost.jobActiveDuration,
+        'is_published': jobProvider.newPost.isPublished,
+        'status': jobProvider.newPost.status,
+      }),
+    );
+    if (response.statusCode == 201) {
+      jobProvider.jobSkills.clear();
+      // ignore: use_build_context_synchronously
+      jobProvider.loadJobs(context);
+      // ignore: use_build_context_synchronously
+      Navigator.of(context).pop();
+    } else {
+      throw Exception("Couldn't save job post.");
+    }
+  }
+
+  showAlertSkillList(BuildContext context) {
+    final jobProvider = Provider.of<JobProvider>(context, listen: false);
+
+    // Remove skills on list
+    Future<List<Skill>> loadListAfterClear() async {
+      final List<Skill> skillList = jobProvider.skills;
+      for (var item in jobProvider.jobSkills) {
+        skillList.removeWhere((element) => element.id == item.id);
+      }
+      return skillList;
+    }
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: const Center(child: Text("Add Skill to Profile")),
+      titleTextStyle:
+          GoogleFonts.dmSans(textStyle: FontThemeData.jobPostSecondHeadingBold),
+      actions: [
+        SizedBox(
+          width: 250.0,
+          height: 180.0,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                width: 200.0,
+                child: FutureBuilder<List<Skill>>(
+                  future: loadListAfterClear(),
+                  builder: (context, future) {
+                    if (!future.hasData) {
+                      return const Text('No Skills Found.');
+                    } else {
+                      List<Skill>? skills = future.data;
+                      if (skills!.isEmpty) {
+                        return const Text('No Skills Found.');
+                      }
+                      return ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        itemCount: skills.length,
+                        shrinkWrap: true,
+                        itemBuilder: (_, i) {
+                          return Center(
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.teal.shade400,
+                                foregroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(2.0),
+                                ),
+                              ),
+                              child: Text(skills[i].name,
+                                  style: GoogleFonts.dmSans()),
+                              onPressed: () {
+                                jobProvider.addSkillToList(skills[i]);
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                          );
+                        },
+                      );
+                    }
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
+    final jobProvider = Provider.of<JobProvider>(context);
+    final List<Category> industryTypes = jobProvider.categories;
+    final List<JobType> jobTypes = jobProvider.jobTypes;
+    final List<PostDuration> jobDurations = jobProvider.postDurations;
     return Scaffold(
       appBar: AppBar(
         title: Row(
@@ -77,6 +224,11 @@ class NewJobPost extends StatelessWidget {
                     ),
                     const SizedBox(height: 2.0),
                     TextFormField(
+                      initialValue: jobProvider.newPost.title,
+                      onChanged: (value) {
+                        jobProvider.newPost.title = value;
+                        setState(() {});
+                      },
                       style: const TextStyle(
                         color: Colors.black,
                         decorationColor: Colors.black,
@@ -101,8 +253,11 @@ class NewJobPost extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Checkbox(
-                    value: false,
-                    onChanged: (value) {},
+                    value: jobProvider.newPost.isRemote,
+                    onChanged: (value) {
+                      jobProvider.newPost.isRemote = value!;
+                      setState(() {});
+                    },
                   ),
                   Text(
                     "This position is remote",
@@ -111,126 +266,102 @@ class NewJobPost extends StatelessWidget {
                   ),
                 ],
               ),
-              //Town & City
-              Row(
-                children: [
-                  // Town
-                  SizedBox(
-                    width: (width / 2) - 30.0,
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                        top: 10.0,
-                        bottom: 10.0,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Town",
-                            style: GoogleFonts.dmSans(
-                                textStyle: FontThemeData.inputLabel),
-                          ),
-                          const SizedBox(height: 2.0),
-                          TextFormField(
-                            style: const TextStyle(
-                              color: Colors.black,
-                              decorationColor: Colors.black,
+              //City & Country
+              (jobProvider.newPost.isRemote == false)
+                  ? Row(
+                      children: [
+                        // City
+                        SizedBox(
+                          width: (width / 2) - 30.0,
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                              top: 10.0,
+                              bottom: 10.0,
                             ),
-                            keyboardType: TextInputType.name,
-                            decoration: InputDecoration(
-                              contentPadding: const EdgeInsets.symmetric(
-                                  vertical: 5.0, horizontal: 5.0),
-                              filled: true,
-                              fillColor: Colors.white,
-                              hintStyle: const TextStyle(
-                                  color: Colors.grey, fontSize: 15.0),
-                              enabledBorder: InputsThemeData.inputForm,
-                              focusedBorder: InputsThemeData.inputFormSelected,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 20.0),
-                  // City
-                  SizedBox(
-                    width: (width / 2) - 30.0,
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                        top: 10.0,
-                        bottom: 10.0,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "City",
-                            style: GoogleFonts.dmSans(
-                                textStyle: FontThemeData.inputLabel),
-                          ),
-                          const SizedBox(height: 2.0),
-                          TextFormField(
-                            style: const TextStyle(
-                              color: Colors.black,
-                              decorationColor: Colors.black,
-                            ),
-                            keyboardType: TextInputType.name,
-                            decoration: InputDecoration(
-                              contentPadding: const EdgeInsets.symmetric(
-                                  vertical: 5.0, horizontal: 5.0),
-                              filled: true,
-                              fillColor: Colors.white,
-                              hintStyle: const TextStyle(
-                                  color: Colors.grey, fontSize: 15.0),
-                              enabledBorder: InputsThemeData.inputForm,
-                              focusedBorder: InputsThemeData.inputFormSelected,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "City",
+                                  style: GoogleFonts.dmSans(
+                                      textStyle: FontThemeData.inputLabel),
+                                ),
+                                const SizedBox(height: 2.0),
+                                TextFormField(
+                                  initialValue: jobProvider.newPost.city,
+                                  onChanged: (value) {
+                                    jobProvider.newPost.city = value;
+                                    setState(() {});
+                                  },
+                                  style: const TextStyle(
+                                    color: Colors.black,
+                                    decorationColor: Colors.black,
+                                  ),
+                                  keyboardType: TextInputType.name,
+                                  decoration: InputDecoration(
+                                    contentPadding: const EdgeInsets.symmetric(
+                                        vertical: 5.0, horizontal: 5.0),
+                                    filled: true,
+                                    fillColor: Colors.white,
+                                    hintStyle: const TextStyle(
+                                        color: Colors.grey, fontSize: 15.0),
+                                    enabledBorder: InputsThemeData.inputForm,
+                                    focusedBorder:
+                                        InputsThemeData.inputFormSelected,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              // Country
-              SizedBox(
-                width: width - 40.0,
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                    top: 10.0,
-                    bottom: 10.0,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Country",
-                        style: GoogleFonts.dmSans(
-                            textStyle: FontThemeData.inputLabel),
-                      ),
-                      const SizedBox(height: 2.0),
-                      TextFormField(
-                        style: const TextStyle(
-                          color: Colors.black,
-                          decorationColor: Colors.black,
                         ),
-                        keyboardType: TextInputType.name,
-                        decoration: InputDecoration(
-                          contentPadding: const EdgeInsets.symmetric(
-                              vertical: 5.0, horizontal: 5.0),
-                          filled: true,
-                          fillColor: Colors.white,
-                          hintStyle: const TextStyle(
-                              color: Colors.grey, fontSize: 15.0),
-                          enabledBorder: InputsThemeData.inputForm,
-                          focusedBorder: InputsThemeData.inputFormSelected,
+                        const SizedBox(width: 20.0),
+                        // Country
+                        SizedBox(
+                          width: (width / 2) - 30.0,
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                              top: 10.0,
+                              bottom: 10.0,
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Country",
+                                  style: GoogleFonts.dmSans(
+                                      textStyle: FontThemeData.inputLabel),
+                                ),
+                                const SizedBox(height: 2.0),
+                                TextFormField(
+                                  initialValue: jobProvider.newPost.country,
+                                  onChanged: (value) {
+                                    jobProvider.newPost.country = value;
+                                    setState(() {});
+                                  },
+                                  style: const TextStyle(
+                                    color: Colors.black,
+                                    decorationColor: Colors.black,
+                                  ),
+                                  keyboardType: TextInputType.name,
+                                  decoration: InputDecoration(
+                                    contentPadding: const EdgeInsets.symmetric(
+                                        vertical: 5.0, horizontal: 5.0),
+                                    filled: true,
+                                    fillColor: Colors.white,
+                                    hintStyle: const TextStyle(
+                                        color: Colors.grey, fontSize: 15.0),
+                                    enabledBorder: InputsThemeData.inputForm,
+                                    focusedBorder:
+                                        InputsThemeData.inputFormSelected,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+                      ],
+                    )
+                  : const SizedBox(),
               // Industry Type
               SizedBox(
                 width: width - 40.0,
@@ -258,15 +389,20 @@ class NewJobPost extends StatelessWidget {
                             width: 2.0,
                           ),
                         ),
-                        child: DropdownButton(
+                        child: DropdownButton<int>(
+                          value: jobProvider.newPost.category,
                           isExpanded: true,
-                          items: industryTypes.map((String type) {
-                            return DropdownMenuItem(
-                              value: type,
-                              child: Text(type),
+                          items: industryTypes
+                              .map<DropdownMenuItem<int>>((Category type) {
+                            return DropdownMenuItem<int>(
+                              value: type.id,
+                              child: Text(type.name),
                             );
                           }).toList(),
-                          onChanged: (value) {},
+                          onChanged: (value) {
+                            jobProvider.newPost.category = value!;
+                            setState(() {});
+                          },
                         ),
                       ),
                     ],
@@ -288,17 +424,21 @@ class NewJobPost extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Min. Salary Amount (Monthly)",
+                            "Min. Salary Amount (Annual)",
                             style: GoogleFonts.dmSans(
                                 textStyle: FontThemeData.inputLabel),
                           ),
                           const SizedBox(height: 2.0),
-                          TextFormField(
+                          TextField(
+                            onChanged: (value) {
+                              jobProvider.newPost.minSalary = int.parse(value);
+                              setState(() {});
+                            },
                             style: const TextStyle(
                               color: Colors.black,
                               decorationColor: Colors.black,
                             ),
-                            keyboardType: TextInputType.name,
+                            keyboardType: TextInputType.number,
                             decoration: InputDecoration(
                               contentPadding: const EdgeInsets.symmetric(
                                   vertical: 5.0, horizontal: 5.0),
@@ -327,17 +467,21 @@ class NewJobPost extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Max. Salary Amount (Monthly)",
+                            "Max. Salary Amount (Annual)",
                             style: GoogleFonts.dmSans(
                                 textStyle: FontThemeData.inputLabel),
                           ),
                           const SizedBox(height: 2.0),
-                          TextFormField(
+                          TextField(
+                            onChanged: (value) {
+                              jobProvider.newPost.maxSalary = int.parse(value);
+                              setState(() {});
+                            },
                             style: const TextStyle(
                               color: Colors.black,
                               decorationColor: Colors.black,
                             ),
-                            keyboardType: TextInputType.name,
+                            keyboardType: TextInputType.number,
                             decoration: InputDecoration(
                               contentPadding: const EdgeInsets.symmetric(
                                   vertical: 5.0, horizontal: 5.0),
@@ -382,15 +526,20 @@ class NewJobPost extends StatelessWidget {
                             width: 2.0,
                           ),
                         ),
-                        child: DropdownButton(
+                        child: DropdownButton<int>(
+                          value: jobProvider.newPost.jobType,
                           isExpanded: true,
-                          items: jobTypes.map((String type) {
-                            return DropdownMenuItem(
-                              value: type,
-                              child: Text(type),
+                          items: jobTypes
+                              .map<DropdownMenuItem<int>>((JobType type) {
+                            return DropdownMenuItem<int>(
+                              value: type.id,
+                              child: Text(type.name),
                             );
                           }).toList(),
-                          onChanged: (value) {},
+                          onChanged: (value) {
+                            jobProvider.newPost.jobType = value!;
+                            setState(() {});
+                          },
                         ),
                       ),
                     ],
@@ -420,54 +569,68 @@ class NewJobPost extends StatelessWidget {
                           spacing: 10.0,
                           direction: Axis.horizontal,
                           children: [
-                            ElevatedButton(
-                              onPressed: () {},
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor:
-                                    const Color.fromRGBO(93, 216, 171, 1.0),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    "Internship",
-                                    softWrap: true,
-                                    style: GoogleFonts.dmSans(
-                                        textStyle: FontThemeData.btnBlackText),
+                            (jobProvider.jobSkills.isNotEmpty)
+                                ? Container(
+                                    width: width - 40.0,
+                                    constraints: const BoxConstraints(
+                                        minHeight: 60.0, maxHeight: 200.0),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 10.0),
+                                    child: ListView.builder(
+                                      itemCount: jobProvider.jobSkills.length,
+                                      shrinkWrap: true,
+                                      itemBuilder: (_, i) {
+                                        return Padding(
+                                          padding:
+                                              const EdgeInsets.only(right: 8.0),
+                                          child: ElevatedButton(
+                                            onPressed: () {},
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor:
+                                                  const Color.fromRGBO(
+                                                      93, 216, 171, 1.0),
+                                            ),
+                                            child: Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Text(
+                                                  jobProvider.jobSkills[i].name,
+                                                  softWrap: true,
+                                                  style: GoogleFonts.dmSans(
+                                                      textStyle: FontThemeData
+                                                          .btnBlackText),
+                                                ),
+                                                const SizedBox(width: 8.0),
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    jobProvider
+                                                        .removeSkillFromList(
+                                                            jobProvider
+                                                                .jobSkills[i]);
+                                                    jobProvider
+                                                        .loadSkills(context);
+                                                  },
+                                                  child: const Icon(
+                                                    Icons.close,
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  )
+                                : const Padding(
+                                    padding:
+                                        EdgeInsets.symmetric(vertical: 13.0),
+                                    child: Text("No Skills Added"),
                                   ),
-                                  const SizedBox(width: 8.0),
-                                  const Icon(
-                                    Icons.close,
-                                    color: Colors.black,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            ElevatedButton(
-                              onPressed: () {},
-                              style: ElevatedButton.styleFrom(
-                                primary:
-                                    const Color.fromRGBO(93, 216, 171, 1.0),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    "CSS",
-                                    softWrap: true,
-                                    style: GoogleFonts.dmSans(
-                                        textStyle: FontThemeData.btnBlackText),
-                                  ),
-                                  const SizedBox(width: 8.0),
-                                  const Icon(
-                                    Icons.close,
-                                    color: Colors.black,
-                                  ),
-                                ],
-                              ),
-                            ),
                             IconButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                showAlertSkillList(context);
+                              },
                               icon: const Icon(Icons.add),
                             ),
                           ],
@@ -486,7 +649,12 @@ class NewJobPost extends StatelessWidget {
                     style:
                         GoogleFonts.dmSans(textStyle: FontThemeData.inputLabel),
                   ),
-                  TextField(
+                  TextFormField(
+                    initialValue: jobProvider.newPost.desc,
+                    onChanged: (value) {
+                      jobProvider.newPost.desc = value;
+                      setState(() {});
+                    },
                     maxLines: 10,
                     maxLength: 500,
                     maxLengthEnforcement: MaxLengthEnforcement.enforced,
@@ -528,15 +696,20 @@ class NewJobPost extends StatelessWidget {
                             width: 2.0,
                           ),
                         ),
-                        child: DropdownButton(
+                        child: DropdownButton<int>(
+                          value: jobProvider.newPost.jobActiveDuration,
                           isExpanded: true,
-                          items: jobDurations.map((String duration) {
-                            return DropdownMenuItem(
-                              value: duration,
-                              child: Text(duration),
+                          items: jobDurations
+                              .map<DropdownMenuItem<int>>((PostDuration type) {
+                            return DropdownMenuItem<int>(
+                              value: type.id,
+                              child: Text(type.name),
                             );
                           }).toList(),
-                          onChanged: (value) {},
+                          onChanged: (value) {
+                            jobProvider.newPost.jobActiveDuration = value!;
+                            setState(() {});
+                          },
                         ),
                       ),
                     ],
@@ -565,7 +738,8 @@ class NewJobPost extends StatelessWidget {
             children: [
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  primary: const Color.fromRGBO(21, 192, 182, 1.0),
+                  foregroundColor: const Color.fromRGBO(21, 192, 182, 1.0),
+                  backgroundColor: const Color.fromRGBO(21, 192, 182, 1.0),
                   padding: const EdgeInsets.symmetric(
                       vertical: 12.0, horizontal: 25.0),
                   shape: RoundedRectangleBorder(
@@ -574,10 +748,13 @@ class NewJobPost extends StatelessWidget {
                     ),
                   ),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  saveJob(context);
+                },
                 child: Row(
                   children: [
-                    const Icon(Icons.post_add_outlined, size: 15.0),
+                    const Icon(Icons.post_add_outlined,
+                        size: 15.0, color: Colors.white),
                     const SizedBox(width: 5.0),
                     Text(
                       "POST A JOB",

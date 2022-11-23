@@ -1,12 +1,21 @@
+import 'package:beamcoda_jobs_partners_flutter/data/auth.dart';
+import 'package:beamcoda_jobs_partners_flutter/types/job_applicant.dart';
+import 'package:beamcoda_jobs_partners_flutter/types/job_post_detailed.dart';
+import 'package:beamcoda_jobs_partners_flutter/utils/constants.dart';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 
 import '../theme_data/fonts.dart';
 import '../../components/job-applicant-list-item.dart';
-import '../../components/job-activity-list-item.dart';
+// import '../../components/job-activity-list-item.dart';
 
 class ViewJobPost extends StatefulWidget {
-  const ViewJobPost({super.key});
+  final int id;
+  const ViewJobPost({required Key key, required this.id}) : super(key: key);
 
   @override
   State<ViewJobPost> createState() => _ViewJobPostState();
@@ -14,9 +23,62 @@ class ViewJobPost extends StatefulWidget {
 
 class _ViewJobPostState extends State<ViewJobPost>
     with TickerProviderStateMixin {
+  JobPostDetailed jobPost = JobPostDetailed(
+    id: 0,
+    title: '',
+    deadlineDate: '',
+    jobCategory: '',
+    isRemote: false,
+    jobLocation: '',
+    jobType: '',
+    desc: '',
+    payRangeExists: true,
+    skills: [],
+  );
+  List<JobApplicant> applicants = <JobApplicant>[
+    JobApplicant(
+      id: 0,
+      name: '',
+      img: '',
+      profession: '',
+      shortlisted: false,
+      read: false,
+    )
+  ];
+
+  void initJob(BuildContext ctx) async {
+    final userProvider = Provider.of<AuthProvider>(ctx, listen: false);
+    String? token = await userProvider.getToken();
+    final Uri url = Uri.parse(
+        "${AppConstants.API_URL}${AppConstants.JOBS_RETRIEVAL}/${widget.id}");
+    final response = await http.get(url, headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token'
+    });
+    if (response.statusCode == 200) {
+      Map<String, dynamic> data = json.decode(response.body);
+      setState(() {
+        jobPost = JobPostDetailed.fromJson(data["data"]);
+        applicants = data["data"]["applicants"]
+            .map<JobApplicant>((item) => JobApplicant.fromJson(item))
+            .toList();
+      });
+
+      print(applicants);
+
+      return;
+    } else {
+      throw Exception('Problem loading job information.');
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      initJob(context);
+    });
   }
 
   @override
@@ -69,11 +131,11 @@ class _ViewJobPostState extends State<ViewJobPost>
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Text("UI/UX Designer",
+                        Text(jobPost.title,
                             style: GoogleFonts.dmSans(
                                 textStyle: FontThemeData.jobPostName)),
                         const SizedBox(height: 5.0),
-                        Text("S.A, California",
+                        Text(jobPost.jobLocation,
                             style: GoogleFonts.raleway(
                                 textStyle: FontThemeData.jobPostSecondHeading)),
                       ],
@@ -85,9 +147,16 @@ class _ViewJobPostState extends State<ViewJobPost>
                             style: GoogleFonts.raleway(
                                 textStyle: FontThemeData.jobPostThirdHeading)),
                         const SizedBox(height: 5.0),
-                        Text("1st May, 2023",
-                            style: GoogleFonts.dmSans(
-                                textStyle: FontThemeData.jobPostDeadlineDate))
+                        (jobPost.deadlineDate.isNotEmpty)
+                            ? Text(
+                                DateFormat("d MMMM yyyy").format(
+                                  DateFormat("yyyy-mm-dd hh:mm:ss")
+                                      .parse(jobPost.deadlineDate),
+                                ),
+                                style: GoogleFonts.dmSans(
+                                    textStyle:
+                                        FontThemeData.jobPostDeadlineDate))
+                            : const SizedBox()
                       ],
                     ),
                   ],
@@ -115,7 +184,7 @@ class _ViewJobPostState extends State<ViewJobPost>
                         SizedBox(
                           width: attributeContainerText,
                           child: Text(
-                            "Information Technology",
+                            jobPost.jobCategory,
                             style: GoogleFonts.dmSans(
                                 textStyle: FontThemeData.jobPostAttributesText),
                             textAlign: TextAlign.center,
@@ -123,25 +192,28 @@ class _ViewJobPostState extends State<ViewJobPost>
                         ),
                       ],
                     ),
-                    Column(
-                      children: <Widget>[
-                        Text("LOCATION",
-                            style: GoogleFonts.dmSans(
-                                textStyle:
-                                    FontThemeData.jobPostAttributesTitle)),
-                        const SizedBox(height: 5.0),
-                        Image(
-                          width: attributeContainer,
-                          height: attributeContainer,
-                          image: const AssetImage("assets/icons/location.png"),
-                        ),
-                        const SizedBox(height: 10.0),
-                        Text("S.A, California",
-                            style: GoogleFonts.dmSans(
-                                textStyle:
-                                    FontThemeData.jobPostAttributesText)),
-                      ],
-                    ),
+                    (jobPost.isRemote)
+                        ? const SizedBox()
+                        : Column(
+                            children: <Widget>[
+                              Text("LOCATION",
+                                  style: GoogleFonts.dmSans(
+                                      textStyle: FontThemeData
+                                          .jobPostAttributesTitle)),
+                              const SizedBox(height: 5.0),
+                              Image(
+                                width: attributeContainer,
+                                height: attributeContainer,
+                                image: const AssetImage(
+                                    "assets/icons/location.png"),
+                              ),
+                              const SizedBox(height: 10.0),
+                              Text(jobPost.jobLocation,
+                                  style: GoogleFonts.dmSans(
+                                      textStyle:
+                                          FontThemeData.jobPostAttributesText)),
+                            ],
+                          ),
                     Column(
                       children: <Widget>[
                         Text("JOB TYPE",
@@ -155,7 +227,7 @@ class _ViewJobPostState extends State<ViewJobPost>
                           image: const AssetImage("assets/icons/job-type.png"),
                         ),
                         const SizedBox(height: 10.0),
-                        Text("Internship",
+                        Text(jobPost.jobType,
                             style: GoogleFonts.dmSans(
                                 textStyle:
                                     FontThemeData.jobPostAttributesText)),
@@ -165,64 +237,76 @@ class _ViewJobPostState extends State<ViewJobPost>
                 ),
               ),
               const SizedBox(height: 10.0),
-              Padding(
-                padding: const EdgeInsets.only(top: 10.0, bottom: 5.0),
-                child: Text(
-                  "Skills",
-                  style: GoogleFonts.raleway(
-                      textStyle: FontThemeData.jobPostSecondHeadingBold),
-                  textAlign: TextAlign.start,
-                ),
-              ),
-              Row(
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.only(right: 10.0),
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        primary: const Color.fromRGBO(231, 231, 231, 1.0),
-                      ),
+              (jobPost.skills.isNotEmpty)
+                  ? Padding(
+                      padding: const EdgeInsets.only(top: 10.0, bottom: 5.0),
                       child: Text(
-                        "JavaScript",
-                        style: GoogleFonts.dmSans(
-                            textStyle: FontThemeData.btnBlackText),
+                        "Skills",
+                        style: GoogleFonts.raleway(
+                            textStyle: FontThemeData.jobPostSecondHeadingBold),
+                        textAlign: TextAlign.start,
                       ),
-                    ),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      primary: const Color.fromRGBO(231, 231, 231, 1.0),
-                    ),
-                    child: Text(
-                      "CSS",
-                      style: GoogleFonts.dmSans(
-                          textStyle: FontThemeData.btnBlackText),
-                    ),
-                  ),
-                ],
-              ),
+                    )
+                  : const SizedBox(),
+              (jobPost.skills.isNotEmpty)
+                  ? Row(
+                      children: <Widget>[
+                        SizedBox(
+                          width: width - 40.0,
+                          height: 40.0,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            clipBehavior: Clip.none,
+                            itemCount: jobPost.skills.length,
+                            shrinkWrap: true,
+                            itemBuilder: (_, i) {
+                              return Padding(
+                                padding: const EdgeInsets.only(right: 10.0),
+                                child: ElevatedButton(
+                                  onPressed: () {},
+                                  style: ElevatedButton.styleFrom(
+                                    foregroundColor: const Color.fromRGBO(
+                                        231, 231, 231, 1.0),
+                                    backgroundColor: const Color.fromRGBO(
+                                        231, 231, 231, 1.0),
+                                  ),
+                                  child: Text(
+                                    jobPost.skills[i],
+                                    style: GoogleFonts.dmSans(
+                                        textStyle: FontThemeData.btnBlackText),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    )
+                  : const SizedBox(),
               const SizedBox(height: 10.0),
               Text(
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pretium vitae mauris dui ac et suscipit. Porttitor duis semper urna, leo. Diam sagittis id blandit et proin enim amet. Ridiculus neque id sagittis fames eros enim leo bibendum elementum. Massa tortor mauris tempus duis sit at tellus tristique aliquet. Tortor non ultrices est diam. Eget dui duis arcu eros leo. Mauris nibh ultricies commodo laoreet in etiam. Pellentesque magna et est, ultricies duis pellentesque velit quam velit.",
+                jobPost.desc,
                 style: GoogleFonts.dmSans(textStyle: FontThemeData.jobPostText),
                 textAlign: TextAlign.justify,
               ),
               const SizedBox(height: 10.0),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 10.0),
-                  Text("Salary Range",
-                      style: GoogleFonts.raleway(
-                          textStyle: FontThemeData.jobPostSalaryRangeTitle)),
-                  const SizedBox(height: 2.0),
-                  Text("\$4000 - \$7000 / Mo",
-                      style: GoogleFonts.dmSans(
-                          textStyle: FontThemeData.jobPostSalaryRangeText))
-                ],
-              ),
+              (jobPost.payRangeExists)
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 10.0),
+                        Text("Salary Range",
+                            style: GoogleFonts.raleway(
+                                textStyle:
+                                    FontThemeData.jobPostSalaryRangeTitle)),
+                        const SizedBox(height: 2.0),
+                        Text("${jobPost.minPayRange} - ${jobPost.maxPayRange}",
+                            style: GoogleFonts.dmSans(
+                                textStyle:
+                                    FontThemeData.jobPostSalaryRangeText))
+                      ],
+                    )
+                  : const SizedBox(),
               const SizedBox(height: 20.0),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10.0),
@@ -232,21 +316,30 @@ class _ViewJobPostState extends State<ViewJobPost>
                       GoogleFonts.dmSans(textStyle: FontThemeData.btnBlackText),
                 ),
               ),
-              SizedBox(
-                height: 250.0,
-                child: SingleChildScrollView(
-                  clipBehavior: Clip.none,
-                  physics: const BouncingScrollPhysics(),
-                  child: Column(
-                    children: const [
-                      JobApplicantListItem(),
-                      JobApplicantListItem(),
-                      JobApplicantListItem(),
-                      JobApplicantListItem(),
-                      JobApplicantListItem(),
-                    ],
+              Column(
+                children: [
+                  SizedBox(
+                    height: 250.0,
+                    child: (applicants.isNotEmpty)
+                        ? ListView.builder(
+                            scrollDirection: Axis.vertical,
+                            clipBehavior: Clip.hardEdge,
+                            itemCount: applicants.length,
+                            shrinkWrap: true,
+                            itemBuilder: (_, i) {
+                              return JobApplicantListItem(
+                                key: UniqueKey(),
+                                applicant: applicants[i],
+                                callback: () => initJob(context),
+                              );
+                            },
+                          )
+                        : Text(
+                            "No Applicants",
+                            style: GoogleFonts.dmSans(),
+                          ),
                   ),
-                ),
+                ],
               ),
               const SizedBox(height: 60.0),
             ],
@@ -283,7 +376,7 @@ class _ViewJobPostState extends State<ViewJobPost>
                 onPressed: () {},
                 child: Row(
                   children: [
-                    const Icon(Icons.edit, size: 15.0),
+                    const Icon(Icons.edit, size: 15.0, color: Colors.white),
                     const SizedBox(width: 5.0),
                     Text(
                       "EDIT JOB POST",
@@ -311,7 +404,7 @@ class _ViewJobPostState extends State<ViewJobPost>
                 },
                 child: Row(
                   children: [
-                    const Icon(Icons.close, size: 15.0),
+                    const Icon(Icons.close, size: 15.0, color: Colors.white),
                     const SizedBox(width: 5.0),
                     Text(
                       "CLOSE POST",

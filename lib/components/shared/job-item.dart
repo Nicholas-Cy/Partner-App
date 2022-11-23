@@ -17,7 +17,8 @@ class JobPost extends StatelessWidget {
       onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (BuildContext context) => const ViewJobPost(),
+            builder: (BuildContext context) =>
+                ViewJobPost(key: UniqueKey(), id: jobPost.id),
           ),
         );
       },
@@ -39,30 +40,33 @@ class JobPost extends StatelessWidget {
         child: Stack(
           clipBehavior: Clip.none,
           children: [
-            Positioned(
-              top: -30.0,
-              right: -10.0,
-              child: Container(
-                width: 30.0,
-                height: 30.0,
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.blue,
-                ),
-                child: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(2.0),
-                    child: Text(
-                      (jobPost.applicantsCount > 99)
-                          ? "99+"
-                          : jobPost.applicantsCount.toString(),
-                      style: GoogleFonts.dmSans(
-                          textStyle: FontThemeData.jobItemUnreadNotifications),
+            (jobPost.applicantsCount > 0)
+                ? Positioned(
+                    top: -30.0,
+                    right: -10.0,
+                    child: Container(
+                      width: 30.0,
+                      height: 30.0,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.blue,
+                      ),
+                      child: Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(2.0),
+                          child: Text(
+                            (jobPost.applicantsCount > 99)
+                                ? "99+"
+                                : jobPost.applicantsCount.toString(),
+                            style: GoogleFonts.dmSans(
+                                textStyle:
+                                    FontThemeData.jobItemUnreadNotifications),
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-              ),
-            ),
+                  )
+                : const SizedBox(),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -83,8 +87,8 @@ class JobPost extends StatelessWidget {
                       ],
                     ),
                     Text(
-                      DateFormat('d M yyyy').format(
-                        DateFormat('dd-mm-yyyy hh:mm:ss')
+                      DateFormat('d MMMM yyyy').format(
+                        DateFormat('yyyy-mm-dd hh:mm:ss')
                             .parse(jobPost.timeAgo),
                       ),
                       style: GoogleFonts.dmSans(

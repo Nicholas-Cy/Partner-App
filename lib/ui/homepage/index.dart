@@ -20,6 +20,11 @@ class _HomePageState extends State<HomePage> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final jobProvider = Provider.of<JobProvider>(context, listen: false);
       jobProvider.loadJobs(context);
+      jobProvider.loadCategories(context);
+      jobProvider.loadJobTypes(context);
+      jobProvider.loadPostDurations(context);
+      jobProvider.loadSkills(context);
+      jobProvider.initNewPost(context);
     });
   }
 
@@ -51,9 +56,12 @@ class _HomePageState extends State<HomePage> {
                 shrinkWrap: true,
                 itemCount: jobProvider.jobs.length,
                 itemBuilder: (_, i) {
-                  return JobPost(
-                    key: UniqueKey(),
-                    jobPost: jobProvider.jobs[i],
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 20.0),
+                    child: JobPost(
+                      key: UniqueKey(),
+                      jobPost: jobProvider.jobs[i],
+                    ),
                   );
                 },
               ),
