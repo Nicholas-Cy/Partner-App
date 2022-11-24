@@ -524,6 +524,9 @@ class _EditJobPostState extends State<EditJobPost> {
                                           decorationColor: Colors.black,
                                         ),
                                         keyboardType: TextInputType.number,
+                                        inputFormatters: [
+                                          FilteringTextInputFormatter.digitsOnly
+                                        ],
                                         decoration: InputDecoration(
                                           contentPadding:
                                               const EdgeInsets.symmetric(
@@ -578,6 +581,9 @@ class _EditJobPostState extends State<EditJobPost> {
                                           decorationColor: Colors.black,
                                         ),
                                         keyboardType: TextInputType.number,
+                                        inputFormatters: [
+                                          FilteringTextInputFormatter.digitsOnly
+                                        ],
                                         decoration: InputDecoration(
                                           contentPadding:
                                               const EdgeInsets.symmetric(
