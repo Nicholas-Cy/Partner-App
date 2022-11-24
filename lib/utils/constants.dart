@@ -25,6 +25,7 @@ class AppConstants {
   static const String JOBS_RETRIEVAL = "/api/jobs/view";
   static const String NEW_JOB = "/api/jobs/new";
   static const String EDIT_JOB = "/api/jobs/edit";
+  static const String TOGGLE_JOB_STATUS = "/api/jobs/toggle-status";
   static const String DELETE_JOB = "/api/jobs/delete";
   static const String SHORTLIST_APPLICANT = "/api/job-applications/shortlist";
 

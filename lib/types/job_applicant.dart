@@ -6,12 +6,14 @@ class JobApplicant {
       required this.img,
       required this.profession,
       required this.shortlisted,
+      required this.resumeLink,
       required this.read});
   final int id;
   late String name;
   late String img;
   late String profession;
   late bool shortlisted;
+  late String resumeLink;
   late bool read;
 
   factory JobApplicant.fromJson(Map<String, dynamic> json) {
@@ -19,6 +21,7 @@ class JobApplicant {
       id: json['id'],
       name: json['user']['full_name'],
       img: json['user']['profile_picture'],
+      resumeLink: json['resume']['download_link'],
       profession: json['user']['profession'],
       shortlisted: (json['shortlisted'] == 1) ? true : false,
       read: (json['read'] == 1) ? true : false,

@@ -36,6 +36,7 @@ class _ViewJobPostState extends State<ViewJobPost>
     desc: '',
     payRangeExists: true,
     skills: [],
+    status: 'active',
   );
   List<JobApplicant> applicants = <JobApplicant>[
     JobApplicant(
@@ -44,6 +45,7 @@ class _ViewJobPostState extends State<ViewJobPost>
       img: '',
       profession: '',
       shortlisted: false,
+      resumeLink: '',
       read: false,
     )
   ];
@@ -99,6 +101,25 @@ class _ViewJobPostState extends State<ViewJobPost>
       return;
     } else {
       throw Exception('Trouble removing the resume from the user');
+    }
+  }
+
+  Future<void> toggleStatus(BuildContext context, String status) async {
+    final userProvider = Provider.of<AuthProvider>(context, listen: false);
+    String? token = await userProvider.getToken();
+    final Uri url = Uri.parse(
+        "${AppConstants.API_URL}${AppConstants.TOGGLE_JOB_STATUS}/${widget.id}/$status");
+    final response = await http.get(url, headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token'
+    });
+
+    if (response.statusCode == 200) {
+      // ignore: use_build_context_synchronously
+      initJob(context);
+      return;
+    } else {
+      throw Exception('Trouble toggling job status');
     }
   }
 
@@ -445,6 +466,27 @@ class _ViewJobPostState extends State<ViewJobPost>
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
+              (jobPost.status == 'active')
+                  ? IconButton(
+                      onPressed: () {
+                        toggleStatus(context, 'paused');
+                      },
+                      icon: const Icon(
+                        Icons.pause,
+                        size: 20.0,
+                        color: Colors.black,
+                      ),
+                    )
+                  : IconButton(
+                      onPressed: () {
+                        toggleStatus(context, 'active');
+                      },
+                      icon: const Icon(
+                        Icons.play_arrow,
+                        size: 20.0,
+                        color: Colors.black,
+                      ),
+                    ),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   foregroundColor: const Color.fromRGBO(21, 192, 182, 1.0),

@@ -62,7 +62,9 @@ class PackageItem extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         if (userProvider.partner.packageId != package.id) {
-          showCreateInvoiceDialog(context);
+          if (int.parse(package.price) > 0) {
+            showCreateInvoiceDialog(context);
+          }
         }
       },
       child: Padding(
