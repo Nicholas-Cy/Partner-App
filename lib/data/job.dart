@@ -1,16 +1,16 @@
 import 'dart:convert';
-import 'package:beamcoda_jobs_partners_flutter/types/category.dart';
-import 'package:beamcoda_jobs_partners_flutter/types/job_types.dart';
-import 'package:beamcoda_jobs_partners_flutter/types/new_post.dart';
-import 'package:beamcoda_jobs_partners_flutter/types/post_duration.dart';
-import 'package:beamcoda_jobs_partners_flutter/types/skill.dart';
-import 'package:beamcoda_jobs_partners_flutter/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
 import './auth.dart';
 import '../types/jobpostcompact.dart';
+import '../types/category.dart';
+import '../types/job_types.dart';
+import '../types/new_post.dart';
+import '../types/post_duration.dart';
+import '../types/skill.dart';
+import '../utils/constants.dart';
 
 class JobProvider extends ChangeNotifier {
   final List<JobPostCompact> _jobs = <JobPostCompact>[];
@@ -19,6 +19,7 @@ class JobProvider extends ChangeNotifier {
   final List<PostDuration> _postDurations = <PostDuration>[];
   final List<Skill> _skills = <Skill>[];
   final List<Skill> _jobSkills = <Skill>[];
+  bool _newPostInit = false;
   late NewPost _newPost;
 
   List<JobPostCompact> get jobs => _jobs;
@@ -27,6 +28,7 @@ class JobProvider extends ChangeNotifier {
   List<Skill> get skills => _skills;
   List<Skill> get jobSkills => _jobSkills;
   List<PostDuration> get postDurations => _postDurations;
+  bool get newPostInit => _newPostInit;
   NewPost get newPost => _newPost;
 
   Future<void> loadJobs(BuildContext ctx) async {
@@ -195,6 +197,7 @@ class JobProvider extends ChangeNotifier {
         isPublished: false,
         status: 'active');
 
+    _newPostInit = true;
     _newPost = initNewPost;
     notifyListeners();
     return;

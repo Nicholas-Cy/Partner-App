@@ -8,7 +8,8 @@ class Partner {
       required this.img,
       required this.bio,
       required this.packageId,
-      required this.memberSince});
+      required this.memberSince,
+      required this.empCount});
   final int id;
   late String name;
   late String displayName;
@@ -17,16 +18,19 @@ class Partner {
   late String bio;
   late int packageId;
   late String memberSince;
+  late String empCount;
 
   factory Partner.fromJson(Map<String, dynamic> json) {
     return Partner(
-        id: json['id'],
-        name: json['name'],
-        displayName: json['display_name'],
-        email: json['email'],
-        img: json['profile_picture'],
-        bio: json['bio'],
-        packageId: json['package'][0]['id'],
-        memberSince: json['member_since']);
+      id: json['id'],
+      name: json['name'],
+      displayName: json['display_name'],
+      email: json['email'],
+      img: json['profile_picture'],
+      bio: json['bio'],
+      packageId: json['package'][0]['id'],
+      memberSince: json['member_since'],
+      empCount: json['company_size'],
+    );
   }
 }

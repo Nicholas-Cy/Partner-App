@@ -11,21 +11,60 @@ import '../../../data/auth.dart';
 import '../../../data/job.dart';
 import '../../../types/category.dart';
 import '../../../types/job_types.dart';
-import '../../../types/post_duration.dart';
+import '../../../types/edit_post.dart';
 import '../../../types/skill.dart';
 import '../../../utils/constants.dart';
 
-class NewJobPost extends StatefulWidget {
-  const NewJobPost({super.key});
+class EditJobPost extends StatefulWidget {
+  final int id;
+  final Function callback;
+  const EditJobPost(
+      {required Key key, required this.id, required this.callback})
+      : super(key: key);
 
   @override
-  State<NewJobPost> createState() => _NewJobPostState();
+  State<EditJobPost> createState() => _EditJobPostState();
 }
 
-class _NewJobPostState extends State<NewJobPost> {
+class _EditJobPostState extends State<EditJobPost> {
+  late EditPost editPost;
+  bool isLoaded = false;
+
+  void initJob(BuildContext ctx) async {
+    final jobProvider = Provider.of<JobProvider>(ctx, listen: false);
+    final userProvider = Provider.of<AuthProvider>(ctx, listen: false);
+    String? token = await userProvider.getToken();
+    jobProvider.jobSkills.clear();
+    final Uri url = Uri.parse(
+        "${AppConstants.API_URL}${AppConstants.JOBS_RETRIEVAL}/${widget.id}");
+    final response = await http.get(url, headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token'
+    });
+    if (response.statusCode == 200) {
+      Map<String, dynamic> data = json.decode(response.body);
+      EditPost newEditPost = EditPost.fromJson(data["data"]);
+      setState(() {
+        isLoaded = true;
+        editPost = newEditPost;
+      });
+      List<Skill> skills = data["data"]["skills"]
+          .map<Skill>((item) => Skill.fromJson(item))
+          .toList();
+      for (var item in skills) {
+        jobProvider.addSkillToList(item);
+      }
+
+      return;
+    } else {
+      throw Exception('Problem loading job information.');
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+    initJob(context);
   }
 
   void saveJob(BuildContext ctx) async {
@@ -33,8 +72,8 @@ class _NewJobPostState extends State<NewJobPost> {
     final jobProvider = Provider.of<JobProvider>(ctx, listen: false);
     String? token = await userProvider.getToken();
 
-    final partnerId = userProvider.partner.id;
-    final Uri url = Uri.parse("${AppConstants.API_URL}${AppConstants.NEW_JOB}");
+    final Uri url = Uri.parse(
+        "${AppConstants.API_URL}${AppConstants.EDIT_JOB}/${widget.id}");
     String skillsList =
         jobProvider.jobSkills.map((skill) => skill.id).toString();
     skillsList = skillsList.substring(1, skillsList.length - 1);
@@ -46,27 +85,26 @@ class _NewJobPostState extends State<NewJobPost> {
         'Authorization': 'Bearer $token'
       },
       body: jsonEncode({
-        'partner_id': partnerId,
-        'job_title': jobProvider.newPost.title,
-        'is_remote': jobProvider.newPost.isRemote,
-        'city': jobProvider.newPost.city,
-        'country': jobProvider.newPost.country,
-        'category_id': jobProvider.newPost.category,
-        'no_pay_range': jobProvider.newPost.noPayRange,
-        'min_salary_range': jobProvider.newPost.minSalary,
-        'max_salary_range': jobProvider.newPost.maxSalary,
-        'job_type_id': jobProvider.newPost.jobType,
-        'desc': jobProvider.newPost.desc,
+        'partner_id': editPost.partnerId,
+        'job_title': editPost.title,
+        'is_remote': editPost.isRemote,
+        'city': editPost.city,
+        'country': editPost.country,
+        'category_id': editPost.category,
+        'no_pay_range': editPost.noPayRange,
+        'min_salary_range': editPost.minSalary,
+        'max_salary_range': editPost.maxSalary,
+        'job_type_id': editPost.jobType,
+        'desc': editPost.desc,
         'skills': skillsList,
-        'job_active_duration': jobProvider.newPost.jobActiveDuration,
-        'is_published': jobProvider.newPost.isPublished,
-        'status': jobProvider.newPost.status,
+        'is_published': editPost.isPublished,
+        'status': editPost.status,
       }),
     );
-    if (response.statusCode == 201) {
+    if (response.statusCode == 200) {
       jobProvider.jobSkills.clear();
       // ignore: use_build_context_synchronously
-      jobProvider.loadJobs(context);
+      widget.callback();
       // ignore: use_build_context_synchronously
       Navigator.of(context).pop();
     } else {
@@ -160,7 +198,6 @@ class _NewJobPostState extends State<NewJobPost> {
     final jobProvider = Provider.of<JobProvider>(context);
     final List<Category> industryTypes = jobProvider.categories;
     final List<JobType> jobTypes = jobProvider.jobTypes;
-    final List<PostDuration> jobDurations = jobProvider.postDurations;
     return Scaffold(
       appBar: AppBar(
         title: Row(
@@ -190,7 +227,7 @@ class _NewJobPostState extends State<NewJobPost> {
         iconTheme: const IconThemeData(color: Colors.black),
       ),
       backgroundColor: const Color.fromRGBO(248, 248, 248, 1.0),
-      body: (jobProvider.newPostInit)
+      body: (isLoaded)
           ? SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
               child: Container(
@@ -202,7 +239,7 @@ class _NewJobPostState extends State<NewJobPost> {
                   children: [
                     const SizedBox(height: 5.0),
                     Text(
-                      "Post a new job",
+                      "Edit job",
                       style: GoogleFonts.dmSans(
                         textStyle: FontThemeData.sectionTitleSecondary,
                       ),
@@ -225,10 +262,12 @@ class _NewJobPostState extends State<NewJobPost> {
                           ),
                           const SizedBox(height: 2.0),
                           TextFormField(
-                            initialValue: jobProvider.newPost.title,
+                            initialValue: editPost.title,
                             onChanged: (value) {
-                              jobProvider.newPost.title = value;
-                              setState(() {});
+                              editPost.title = value;
+                              setState(() {
+                                editPost = editPost;
+                              });
                             },
                             style: const TextStyle(
                               color: Colors.black,
@@ -254,10 +293,12 @@ class _NewJobPostState extends State<NewJobPost> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Checkbox(
-                          value: jobProvider.newPost.isRemote,
+                          value: editPost.isRemote,
                           onChanged: (value) {
-                            jobProvider.newPost.isRemote = value!;
-                            setState(() {});
+                            editPost.isRemote = value!;
+                            setState(() {
+                              editPost = editPost;
+                            });
                           },
                         ),
                         Text(
@@ -268,7 +309,7 @@ class _NewJobPostState extends State<NewJobPost> {
                       ],
                     ),
                     //City & Country
-                    (jobProvider.newPost.isRemote == false)
+                    (editPost.isRemote == false)
                         ? Row(
                             children: [
                               // City
@@ -291,10 +332,12 @@ class _NewJobPostState extends State<NewJobPost> {
                                       ),
                                       const SizedBox(height: 2.0),
                                       TextFormField(
-                                        initialValue: jobProvider.newPost.city,
+                                        initialValue: editPost.city,
                                         onChanged: (value) {
-                                          jobProvider.newPost.city = value;
-                                          setState(() {});
+                                          editPost.city = value;
+                                          setState(() {
+                                            editPost = editPost;
+                                          });
                                         },
                                         style: const TextStyle(
                                           color: Colors.black,
@@ -342,11 +385,12 @@ class _NewJobPostState extends State<NewJobPost> {
                                       ),
                                       const SizedBox(height: 2.0),
                                       TextFormField(
-                                        initialValue:
-                                            jobProvider.newPost.country,
+                                        initialValue: editPost.country,
                                         onChanged: (value) {
-                                          jobProvider.newPost.country = value;
-                                          setState(() {});
+                                          editPost.country = value;
+                                          setState(() {
+                                            editPost = editPost;
+                                          });
                                         },
                                         style: const TextStyle(
                                           color: Colors.black,
@@ -404,7 +448,7 @@ class _NewJobPostState extends State<NewJobPost> {
                                 ),
                               ),
                               child: DropdownButton<int>(
-                                value: jobProvider.newPost.category,
+                                value: editPost.category,
                                 isExpanded: true,
                                 items: industryTypes.map<DropdownMenuItem<int>>(
                                     (Category type) {
@@ -414,8 +458,10 @@ class _NewJobPostState extends State<NewJobPost> {
                                   );
                                 }).toList(),
                                 onChanged: (value) {
-                                  jobProvider.newPost.category = value!;
-                                  setState(() {});
+                                  editPost.category = value!;
+                                  setState(() {
+                                    editPost = editPost;
+                                  });
                                 },
                               ),
                             ),
@@ -428,9 +474,9 @@ class _NewJobPostState extends State<NewJobPost> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Checkbox(
-                          value: jobProvider.newPost.noPayRange,
+                          value: editPost.noPayRange,
                           onChanged: (value) {
-                            jobProvider.newPost.noPayRange = value!;
+                            editPost.noPayRange = value!;
                             setState(() {});
                           },
                         ),
@@ -442,10 +488,10 @@ class _NewJobPostState extends State<NewJobPost> {
                       ],
                     ),
                     // Min & Max Salary
-                    (jobProvider.newPost.noPayRange == false)
+                    (editPost.noPayRange == false)
                         ? Row(
                             children: [
-                              // Town
+                              // Min Salary
                               SizedBox(
                                 width: (width / 2) - 30.0,
                                 child: Padding(
@@ -464,11 +510,14 @@ class _NewJobPostState extends State<NewJobPost> {
                                                 FontThemeData.inputLabel),
                                       ),
                                       const SizedBox(height: 2.0),
-                                      TextField(
+                                      TextFormField(
+                                        initialValue:
+                                            editPost.minSalary.toString(),
                                         onChanged: (value) {
-                                          jobProvider.newPost.minSalary =
-                                              int.parse(value);
-                                          setState(() {});
+                                          editPost.minSalary = int.parse(value);
+                                          setState(() {
+                                            editPost = editPost;
+                                          });
                                         },
                                         style: const TextStyle(
                                           color: Colors.black,
@@ -496,7 +545,7 @@ class _NewJobPostState extends State<NewJobPost> {
                                 ),
                               ),
                               const SizedBox(width: 20.0),
-                              // City
+                              // Max Salary
                               SizedBox(
                                 width: (width / 2) - 30.0,
                                 child: Padding(
@@ -515,11 +564,14 @@ class _NewJobPostState extends State<NewJobPost> {
                                                 FontThemeData.inputLabel),
                                       ),
                                       const SizedBox(height: 2.0),
-                                      TextField(
+                                      TextFormField(
+                                        initialValue:
+                                            editPost.maxSalary.toString(),
                                         onChanged: (value) {
-                                          jobProvider.newPost.maxSalary =
-                                              int.parse(value);
-                                          setState(() {});
+                                          editPost.maxSalary = int.parse(value);
+                                          setState(() {
+                                            editPost = editPost;
+                                          });
                                         },
                                         style: const TextStyle(
                                           color: Colors.black,
@@ -577,7 +629,7 @@ class _NewJobPostState extends State<NewJobPost> {
                                 ),
                               ),
                               child: DropdownButton<int>(
-                                value: jobProvider.newPost.jobType,
+                                value: editPost.jobType,
                                 isExpanded: true,
                                 items: jobTypes
                                     .map<DropdownMenuItem<int>>((JobType type) {
@@ -587,7 +639,7 @@ class _NewJobPostState extends State<NewJobPost> {
                                   );
                                 }).toList(),
                                 onChanged: (value) {
-                                  jobProvider.newPost.jobType = value!;
+                                  editPost.jobType = value!;
                                   setState(() {});
                                 },
                               ),
@@ -710,10 +762,12 @@ class _NewJobPostState extends State<NewJobPost> {
                               textStyle: FontThemeData.inputLabel),
                         ),
                         TextFormField(
-                          initialValue: jobProvider.newPost.desc,
+                          initialValue: editPost.desc,
                           onChanged: (value) {
-                            jobProvider.newPost.desc = value;
-                            setState(() {});
+                            editPost.desc = value;
+                            setState(() {
+                              editPost = editPost;
+                            });
                           },
                           maxLines: 10,
                           maxLength: 500,
@@ -728,54 +782,6 @@ class _NewJobPostState extends State<NewJobPost> {
                           enableSuggestions: true,
                         ),
                       ],
-                    ),
-                    // Job Type
-                    SizedBox(
-                      width: width - 40.0,
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                          top: 10.0,
-                          bottom: 10.0,
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Job Active Duration",
-                              style: GoogleFonts.dmSans(
-                                  textStyle: FontThemeData.inputLabel),
-                            ),
-                            const SizedBox(height: 2.0),
-                            Container(
-                              width: width,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                border: Border.all(
-                                  color: const Color.fromRGBO(51, 65, 85, 1.0)
-                                      .withOpacity(0.2),
-                                  width: 2.0,
-                                ),
-                              ),
-                              child: DropdownButton<int>(
-                                value: jobProvider.newPost.jobActiveDuration,
-                                isExpanded: true,
-                                items: jobDurations.map<DropdownMenuItem<int>>(
-                                    (PostDuration type) {
-                                  return DropdownMenuItem<int>(
-                                    value: type.id,
-                                    child: Text(type.name),
-                                  );
-                                }).toList(),
-                                onChanged: (value) {
-                                  jobProvider.newPost.jobActiveDuration =
-                                      value!;
-                                  setState(() {});
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
                     ),
                     const SizedBox(height: 80.0),
                   ],
@@ -819,7 +825,7 @@ class _NewJobPostState extends State<NewJobPost> {
                         size: 15.0, color: Colors.white),
                     const SizedBox(width: 5.0),
                     Text(
-                      "POST A JOB",
+                      "UPDATE JOB",
                       style:
                           GoogleFonts.dmSans(textStyle: FontThemeData.btnText),
                     ),

@@ -1,5 +1,3 @@
-import 'package:beamcoda_jobs_partners_flutter/ui/authentication/register.dart';
-import 'package:beamcoda_jobs_partners_flutter/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -8,6 +6,8 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../data/auth.dart';
 import '../theme_data/fonts.dart';
 import '../theme_data/inputs.dart';
+import '../../ui/authentication/register.dart';
+import '../../utils/constants.dart';
 import '../layout.dart';
 
 class LoginPage extends StatefulWidget {

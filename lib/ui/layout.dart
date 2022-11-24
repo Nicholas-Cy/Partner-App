@@ -1,5 +1,3 @@
-import 'package:beamcoda_jobs_partners_flutter/data/auth.dart';
-import 'package:beamcoda_jobs_partners_flutter/ui/authentication/login.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -10,6 +8,8 @@ import './job-post/new/index.dart';
 import './homepage/index.dart';
 import './profile/index.dart';
 import './settings/index.dart';
+import '../data/auth.dart';
+import '../ui/authentication/login.dart';
 
 class LayoutPage extends StatefulWidget {
   const LayoutPage({required Key key}) : super(key: key);
@@ -119,7 +119,8 @@ class _LayoutPageState extends State<LayoutPage> {
                       onPressed: () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (BuildContext context) => NewJobPost(),
+                            builder: (BuildContext context) =>
+                                const NewJobPost(),
                           ),
                         );
                       },

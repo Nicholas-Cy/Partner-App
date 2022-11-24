@@ -1,5 +1,3 @@
-import 'package:beamcoda_jobs_partners_flutter/ui/settings/subscription/index.dart';
-import 'package:beamcoda_jobs_partners_flutter/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -7,9 +5,11 @@ import 'package:url_launcher/url_launcher.dart';
 import '../theme_data/fonts.dart';
 
 import './notifications/index.dart';
-import './appearance/index.dart';
+// import './appearance/index.dart';
 import './privacy-security/index.dart';
 import './help-support/index.dart';
+import '../settings/subscription/index.dart';
+import '../../utils/constants.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});

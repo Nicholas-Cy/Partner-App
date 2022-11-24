@@ -1,9 +1,9 @@
-import 'package:beamcoda_jobs_partners_flutter/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../theme_data/fonts.dart';
+import '../../../utils/constants.dart';
 
 class HelpSupportPage extends StatelessWidget {
   const HelpSupportPage({super.key});

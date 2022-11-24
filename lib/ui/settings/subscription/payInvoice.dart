@@ -1,15 +1,15 @@
 import 'dart:convert';
-import 'package:beamcoda_jobs_partners_flutter/data/subscription.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
-import 'package:beamcoda_jobs_partners_flutter/data/auth.dart';
-import 'package:beamcoda_jobs_partners_flutter/ui/theme_data/fonts.dart';
-import 'package:beamcoda_jobs_partners_flutter/ui/theme_data/inputs.dart';
-import 'package:beamcoda_jobs_partners_flutter/utils/constants.dart';
+import '../../../data/subscription.dart';
+import '../../../data/auth.dart';
+import '../../../ui/theme_data/fonts.dart';
+import '../../../ui/theme_data/inputs.dart';
+import '../../../utils/constants.dart';
 
 class CardNumberInputFormatter extends TextInputFormatter {
   @override

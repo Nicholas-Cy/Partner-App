@@ -1,13 +1,27 @@
+import 'dart:io';
+import 'dart:convert';
+import 'package:beamcoda_jobs_partners_flutter/data/auth.dart';
+import 'package:beamcoda_jobs_partners_flutter/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 
 import '../theme_data/fonts.dart';
 import '../theme_data/inputs.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
   ProfilePage({super.key});
 
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  File image = File('');
+  final picker = ImagePicker();
   final companySizes = [
     '< 10',
     '10 - 20',
@@ -16,9 +30,106 @@ class ProfilePage extends StatelessWidget {
     '500 - 1000',
     '1000+'
   ];
+  String msg = '';
+
+  @override
+  void initState() {
+    super.initState();
+    msg = '';
+  }
+
+  Future getImage() async {
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    setState(() {
+      if (pickedFile != null) {
+        image = File(pickedFile.path);
+      } else {
+        throw Exception('No image selected.');
+      }
+    });
+  }
+
+  Future<Widget> buildImage() async {
+    bool exists = await image.exists();
+    if (!exists) {
+      return const Padding(
+        padding: EdgeInsets.fromLTRB(1, 1, 1, 1),
+        child: Icon(
+          Icons.add,
+          color: Colors.grey,
+        ),
+      );
+    } else {
+      return Text(image.path);
+    }
+  }
+
+  Future<String> uploadImage(File img) async {
+    final userProvider = Provider.of<AuthProvider>(context, listen: false);
+    String? token = await userProvider.getToken();
+    Map<String, String> headers = {
+      'Content-Type': 'multipart/form-data',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token'
+    };
+    var request = http.MultipartRequest('POST',
+        Uri.parse("${AppConstants.API_URL}${AppConstants.UPLOAD_IMG_URL}"))
+      ..headers.addAll(headers)
+      ..files.add(await http.MultipartFile.fromPath('image', img.path));
+    var response = await request.send();
+    if (response.statusCode == 200) {
+      final responseString = await response.stream.bytesToString();
+      Map<String, dynamic> data = json.decode(responseString);
+      return data['data']['file_name'];
+    } else {
+      throw Exception('Couldn\'t upload the profile picture.');
+    }
+  }
+
+  void saveProfile(BuildContext ctx) async {
+    final userProvider = Provider.of<AuthProvider>(ctx, listen: false);
+    String? token = await userProvider.getToken();
+    late String imgUrl;
+
+    if (image.path != '') {
+      String res = await uploadImage(image);
+      imgUrl =
+          "${AppConstants.API_URL}${AppConstants.UPLOAD_IMG_DIRECTORY}/$res";
+    }
+
+    final partnerId = userProvider.partner.id;
+    final Uri url = Uri.parse(
+        "${AppConstants.API_URL}${AppConstants.PARTNER_SAVE_PROFILE}/$partnerId");
+    final response = await http.put(
+      url,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token'
+      },
+      body: jsonEncode({
+        'img_url': (image.path == '') ? userProvider.partner.img : imgUrl,
+        'company_name': userProvider.partner.name,
+        'short_name': userProvider.partner.displayName,
+        'bio': userProvider.partner.bio,
+        'employee_count': userProvider.partner.empCount
+      }),
+    );
+    if (response.statusCode == 200) {
+      // ignore: use_build_context_synchronously
+      userProvider.getUserDetails(context);
+      setState(() {
+        msg = 'Profile Information Saved.';
+      });
+      return;
+    } else {
+      throw Exception("Couldn't update user profile.");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context);
     double width = MediaQuery.of(context).size.width;
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
@@ -43,9 +154,20 @@ class ProfilePage extends StatelessWidget {
                     ),
                     color: Colors.white,
                   ),
-                  child: const Image(
-                    width: 20.0,
-                    image: AssetImage('assets/images/logo.png'),
+                  child: GestureDetector(
+                    onTap: () async {
+                      await getImage();
+                    },
+                    child: (image.path == '')
+                        ? Image(
+                            width: 20.0,
+                            image: NetworkImage(authProvider.partner.img,
+                                headers: {'Keep-Alive': 'timeout=5, max=1000'}),
+                          )
+                        : Image(
+                            width: 20.0,
+                            image: FileImage(image),
+                          ),
                   ),
                 ),
                 const SizedBox(width: 10.0),
@@ -104,6 +226,10 @@ class ProfilePage extends StatelessWidget {
                           color: Colors.black,
                           decorationColor: Colors.black,
                         ),
+                        initialValue: authProvider.partner.name,
+                        onChanged: (value) {
+                          authProvider.partner.name = value;
+                        },
                         keyboardType: TextInputType.name,
                         decoration: InputDecoration(
                           contentPadding: const EdgeInsets.symmetric(
@@ -128,7 +254,7 @@ class ProfilePage extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Short name",
+                        "Display name",
                         style: GoogleFonts.dmSans(
                             textStyle: FontThemeData.inputLabel),
                       ),
@@ -137,6 +263,10 @@ class ProfilePage extends StatelessWidget {
                           color: Colors.black,
                           decorationColor: Colors.black,
                         ),
+                        initialValue: authProvider.partner.displayName,
+                        onChanged: (value) {
+                          authProvider.partner.displayName = value;
+                        },
                         keyboardType: TextInputType.name,
                         decoration: InputDecoration(
                           contentPadding: const EdgeInsets.symmetric(
@@ -157,11 +287,15 @@ class ProfilePage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Short Bio",
+                      "Bio",
                       style: GoogleFonts.dmSans(
                           textStyle: FontThemeData.inputLabel),
                     ),
-                    TextField(
+                    TextFormField(
+                      initialValue: authProvider.partner.bio,
+                      onChanged: (value) {
+                        authProvider.partner.bio = value;
+                      },
                       maxLines: 10,
                       maxLength: 500,
                       maxLengthEnforcement: MaxLengthEnforcement.enforced,
@@ -204,76 +338,63 @@ class ProfilePage extends StatelessWidget {
                               width: 2.0,
                             ),
                           ),
-                          child: DropdownButton(
+                          child: DropdownButton<String>(
+                            value: authProvider.partner.empCount,
                             isExpanded: true,
-                            items: companySizes.map((String size) {
+                            items: companySizes
+                                .map<DropdownMenuItem<String>>((String size) {
                               return DropdownMenuItem(
                                 value: size,
                                 child: Text(size),
                               );
                             }).toList(),
-                            onChanged: (value) {},
+                            onChanged: (value) {
+                              authProvider.partner.empCount = value!;
+                              setState(() {});
+                            },
                           ),
                         ),
                       ],
                     ),
                   ),
                 ),
-                const SizedBox(height: 10.0),
-                // Locations
-                Text(
-                  "Locations",
-                  style: GoogleFonts.dmSans(
-                      textStyle: FontThemeData.profilePageSecondaryTitle),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 5.0),
+                  child: (msg.isNotEmpty)
+                      ? Text(
+                          msg,
+                          style: GoogleFonts.dmSans(
+                            color: Colors.green,
+                          ),
+                        )
+                      : const SizedBox(),
                 ),
-                const SizedBox(height: 10.0),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Container(
-                      constraints: BoxConstraints(minWidth: width - 100.0),
-                      height: 40.0,
-                      child: ListView.builder(
-                        clipBehavior: Clip.hardEdge,
-                        scrollDirection: Axis.horizontal,
-                        itemCount: 2,
-                        shrinkWrap: true,
-                        itemBuilder: (_, i) {
-                          return Padding(
-                            padding: const EdgeInsets.only(right: 10.0),
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 10.0, horizontal: 15.0),
-                              decoration: BoxDecoration(
-                                color: const Color.fromRGBO(231, 231, 231, 1.0),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.1),
-                                    blurRadius: 5.0,
-                                  ),
-                                ],
-                              ),
-                              child: Text(
-                                "S.A., California",
-                                style: GoogleFonts.dmSans(
-                                    textStyle: FontThemeData.resumeTitle),
-                                softWrap: true,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                          );
-                        },
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: const Color.fromRGBO(21, 192, 182, 1.0),
+                    backgroundColor: const Color.fromRGBO(21, 192, 182, 1.0),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 12.0, horizontal: 25.0),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(
+                        5.0,
                       ),
                     ),
-                    IconButton(
-                      onPressed: () {},
-                      icon: const Icon(
-                        Icons.add_circle,
-                        size: 40.0,
-                        color: Color.fromRGBO(21, 192, 182, 1.0),
+                  ),
+                  onPressed: () {
+                    saveProfile(context);
+                  },
+                  child: Row(
+                    children: [
+                      const Icon(Icons.save, size: 15.0, color: Colors.white),
+                      const SizedBox(width: 10.0),
+                      Text(
+                        "UPDATE PROFILE",
+                        style: GoogleFonts.dmSans(
+                            textStyle: FontThemeData.btnText),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
                 const SizedBox(height: 50.0),
               ],

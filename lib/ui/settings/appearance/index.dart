@@ -74,9 +74,7 @@ class AppearancePage extends StatelessWidget {
                     child: CustomToggleSwitch(
                       value: true,
                       key: UniqueKey(),
-                      onChange: () {
-                        // TODO: Add Switch Change Logic here
-                      },
+                      onChange: () {},
                     ),
                   ),
                 ],

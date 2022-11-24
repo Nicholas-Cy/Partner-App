@@ -1,12 +1,12 @@
-import 'package:beamcoda_jobs_partners_flutter/data/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-import 'package:beamcoda_jobs_partners_flutter/ui/settings/subscription/payInvoice.dart';
-import 'package:beamcoda_jobs_partners_flutter/data/subscription.dart';
-import 'package:beamcoda_jobs_partners_flutter/types/subscription.dart';
-import 'package:beamcoda_jobs_partners_flutter/ui/theme_data/fonts.dart';
+import '../../../data/auth.dart';
+import '../../../ui/settings/subscription/payInvoice.dart';
+import '../../../data/subscription.dart';
+import '../../../types/subscription.dart';
+import '../../../ui/theme_data/fonts.dart';
 
 class PackageItem extends StatelessWidget {
   final Subscription package;

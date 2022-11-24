@@ -1,8 +1,5 @@
-import 'package:beamcoda_jobs_partners_flutter/data/auth.dart';
-import 'package:beamcoda_jobs_partners_flutter/types/job_applicant.dart';
-import 'package:beamcoda_jobs_partners_flutter/types/job_post_detailed.dart';
-import 'package:beamcoda_jobs_partners_flutter/utils/constants.dart';
 import 'dart:convert';
+import 'package:beamcoda_jobs_partners_flutter/data/job.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -11,6 +8,11 @@ import 'package:http/http.dart' as http;
 
 import '../theme_data/fonts.dart';
 import '../../components/job-applicant-list-item.dart';
+import '../../data/auth.dart';
+import '../../types/job_applicant.dart';
+import '../../types/job_post_detailed.dart';
+import '../../utils/constants.dart';
+import './edit/index.dart';
 // import '../../components/job-activity-list-item.dart';
 
 class ViewJobPost extends StatefulWidget {
@@ -64,8 +66,6 @@ class _ViewJobPostState extends State<ViewJobPost>
             .toList();
       });
 
-      print(applicants);
-
       return;
     } else {
       throw Exception('Problem loading job information.');
@@ -79,6 +79,89 @@ class _ViewJobPostState extends State<ViewJobPost>
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       initJob(context);
     });
+  }
+
+  Future<void> deleteJob(BuildContext context) async {
+    final userProvider = Provider.of<AuthProvider>(context, listen: false);
+    String? token = await userProvider.getToken();
+    final Uri url = Uri.parse(
+        "${AppConstants.API_URL}${AppConstants.DELETE_JOB}/${widget.id}");
+    final response = await http.get(url, headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token'
+    });
+
+    if (response.statusCode == 200) {
+      // ignore: use_build_context_synchronously
+      final jobProvider = Provider.of<JobProvider>(context, listen: false);
+      // ignore: use_build_context_synchronously
+      jobProvider.loadJobs(context);
+      return;
+    } else {
+      throw Exception('Trouble removing the resume from the user');
+    }
+  }
+
+  openPostDeleteDialog(BuildContext context, Function callback) {
+    // set up the buttons
+    Widget consentBtn = ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: const Color.fromRGBO(255, 0, 0, 1.0),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(2.0),
+        ),
+      ),
+      child: Text("Yes, Delete", style: GoogleFonts.dmSans()),
+      onPressed: () async {
+        await deleteJob(context).then((value) {
+          Navigator.of(context).pop();
+          callback();
+        });
+      },
+    );
+    Widget cancelBtn = TextButton(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(2.0),
+            side: const BorderSide(color: Color.fromRGBO(226, 232, 240, 1.0))),
+      ),
+      child: Text("No, Exit", style: GoogleFonts.dmSans(color: Colors.black)),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Center(
+          child: Text(
+              "CAUTION!!! You're about to delete a the job post ${jobPost.title}")),
+      titleTextStyle:
+          GoogleFonts.dmSans(textStyle: FontThemeData.jobPostSecondHeadingBold),
+      content: Text(
+        "Once you delete this job, you cannot undo it.",
+        style: GoogleFonts.dmSans(textStyle: FontThemeData.jobPostText),
+      ),
+      actions: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            consentBtn,
+            const SizedBox(width: 10.0),
+            cancelBtn,
+          ],
+        ),
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 
   @override
@@ -290,7 +373,7 @@ class _ViewJobPostState extends State<ViewJobPost>
                 textAlign: TextAlign.justify,
               ),
               const SizedBox(height: 10.0),
-              (jobPost.payRangeExists)
+              (jobPost.payRangeExists == false)
                   ? Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -300,7 +383,8 @@ class _ViewJobPostState extends State<ViewJobPost>
                                 textStyle:
                                     FontThemeData.jobPostSalaryRangeTitle)),
                         const SizedBox(height: 2.0),
-                        Text("${jobPost.minPayRange} - ${jobPost.maxPayRange}",
+                        Text(
+                            "${AppConstants.CURRENCY_PREFIX}${jobPost.minPayRange} - ${AppConstants.CURRENCY_PREFIX}${jobPost.maxPayRange} / Annual",
                             style: GoogleFonts.dmSans(
                                 textStyle:
                                     FontThemeData.jobPostSalaryRangeText))
@@ -373,7 +457,16 @@ class _ViewJobPostState extends State<ViewJobPost>
                     ),
                   ),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => EditJobPost(
+                          key: UniqueKey(),
+                          id: jobPost.id,
+                          callback: () => initJob(context)),
+                    ),
+                  );
+                },
                 child: Row(
                   children: [
                     const Icon(Icons.edit, size: 15.0, color: Colors.white),
@@ -399,15 +492,15 @@ class _ViewJobPostState extends State<ViewJobPost>
                     ),
                   ),
                 ),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
+                onPressed: () => openPostDeleteDialog(
+                    context, () => {Navigator.of(context).pop()}),
                 child: Row(
                   children: [
-                    const Icon(Icons.close, size: 15.0, color: Colors.white),
+                    const Icon(Icons.delete_forever_sharp,
+                        size: 15.0, color: Colors.white),
                     const SizedBox(width: 5.0),
                     Text(
-                      "CLOSE POST",
+                      "DELETE POST",
                       style:
                           GoogleFonts.dmSans(textStyle: FontThemeData.btnText),
                     ),

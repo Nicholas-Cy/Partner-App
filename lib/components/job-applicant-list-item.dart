@@ -1,12 +1,12 @@
-import 'package:beamcoda_jobs_partners_flutter/data/auth.dart';
-import 'package:beamcoda_jobs_partners_flutter/types/job_applicant.dart';
-import 'package:beamcoda_jobs_partners_flutter/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
 import '../ui/theme_data/fonts.dart';
+import '../data/auth.dart';
+import '../types/job_applicant.dart';
+import '../utils/constants.dart';
 
 class JobApplicantListItem extends StatefulWidget {
   final JobApplicant applicant;
@@ -23,7 +23,6 @@ class _JobApplicantListItemState extends State<JobApplicantListItem> {
   Future<void> shortlistCandidate(BuildContext ctx) async {
     final userProvider = Provider.of<AuthProvider>(ctx, listen: false);
     String? token = await userProvider.getToken();
-    final partnerId = userProvider.partner.id;
     final Uri url = Uri.parse(
         "${AppConstants.API_URL}${AppConstants.SHORTLIST_APPLICANT}/${widget.applicant.id}");
     final response = await http.get(url, headers: {

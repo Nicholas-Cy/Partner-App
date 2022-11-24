@@ -1,10 +1,10 @@
-import 'package:beamcoda_jobs_partners_flutter/data/job.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import '../theme_data/fonts.dart';
 import '../../components/shared/job-item.dart';
+import '../../data/job.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -20,11 +20,25 @@ class _HomePageState extends State<HomePage> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final jobProvider = Provider.of<JobProvider>(context, listen: false);
       jobProvider.loadJobs(context);
-      jobProvider.loadCategories(context);
-      jobProvider.loadJobTypes(context);
-      jobProvider.loadPostDurations(context);
-      jobProvider.loadSkills(context);
-      jobProvider.initNewPost(context);
+      if (mounted) {
+        await jobProvider.loadCategories(context).then((value) async {
+          if (mounted) {
+            await jobProvider.loadJobTypes(context).then((value) async {
+              if (mounted) {
+                await jobProvider
+                    .loadPostDurations(context)
+                    .then((value) async {
+                  if (mounted) {
+                    await jobProvider
+                        .loadSkills(context)
+                        .then((value) => {jobProvider.initNewPost(context)});
+                  }
+                });
+              }
+            });
+          }
+        });
+      }
     });
   }
 

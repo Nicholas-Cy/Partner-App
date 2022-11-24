@@ -1,12 +1,13 @@
 import 'dart:convert';
-import 'package:beamcoda_jobs_partners_flutter/data/auth.dart';
-import 'package:beamcoda_jobs_partners_flutter/types/invoice.dart';
-import 'package:beamcoda_jobs_partners_flutter/types/subscription.dart';
-import 'package:beamcoda_jobs_partners_flutter/utils/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
+
+import './auth.dart';
+import '../types/invoice.dart';
+import '../types/subscription.dart';
+import '../utils/constants.dart';
 
 class SubscriptionProvider extends ChangeNotifier {
   final List<Subscription> _packages = <Subscription>[];

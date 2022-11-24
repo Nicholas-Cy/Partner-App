@@ -1,6 +1,4 @@
 // Subscription List Data Type
-import 'dart:convert';
-
 class Subscription {
   const Subscription(
       {required this.id,

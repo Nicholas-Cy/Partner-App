@@ -1,11 +1,12 @@
-import 'package:beamcoda_jobs_partners_flutter/data/auth.dart';
-import 'package:beamcoda_jobs_partners_flutter/data/subscription.dart';
-import 'package:beamcoda_jobs_partners_flutter/ui/settings/subscription/invoiceItem.dart';
-import 'package:beamcoda_jobs_partners_flutter/ui/settings/subscription/item.dart';
-import 'package:beamcoda_jobs_partners_flutter/ui/theme_data/fonts.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+
+import '../../../data/auth.dart';
+import '../../../data/subscription.dart';
+import '../../../ui/settings/subscription/invoiceItem.dart';
+import '../../../ui/settings/subscription/item.dart';
+import '../../../ui/theme_data/fonts.dart';
 
 class SubscriptionPage extends StatefulWidget {
   const SubscriptionPage({super.key});

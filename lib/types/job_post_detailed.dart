@@ -1,5 +1,3 @@
-import 'package:beamcoda_jobs_partners_flutter/types/job_applicant.dart';
-
 class JobPostDetailed {
   JobPostDetailed({
     required this.id,
@@ -39,7 +37,7 @@ class JobPostDetailed {
           : '',
       jobType: json['job_type']['name'],
       desc: json['desc'],
-      payRangeExists: (json['no_pay_range'] == 1) ? false : true,
+      payRangeExists: (json['no_pay_range'] == 1) ? true : false,
       minPayRange: '${json['min_salary_range']}',
       maxPayRange: '${json['max_salary_range']}',
       skills: json['skills'].map((item) => item['name']).toList(),

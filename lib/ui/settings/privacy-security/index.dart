@@ -1,6 +1,3 @@
-import 'package:beamcoda_jobs_partners_flutter/data/auth.dart';
-import 'package:beamcoda_jobs_partners_flutter/ui/authentication/login.dart';
-import 'package:beamcoda_jobs_partners_flutter/utils/constants.dart';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -9,6 +6,9 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
 
 import '../../theme_data/fonts.dart';
+import '../../../data/auth.dart';
+import '../../../ui/authentication/login.dart';
+import '../../../utils/constants.dart';
 
 class PrivacySecurityPage extends StatefulWidget {
   const PrivacySecurityPage({super.key});

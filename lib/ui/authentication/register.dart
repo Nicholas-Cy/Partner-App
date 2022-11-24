@@ -1,12 +1,11 @@
-import 'package:beamcoda_jobs_partners_flutter/data/auth.dart';
-import 'package:beamcoda_jobs_partners_flutter/types/register_partner.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-// import 'package:provider/provider.dart';
 
 import '../theme_data/fonts.dart';
 import '../theme_data/inputs.dart';
+import '../../data/auth.dart';
+import '../../types/register_partner.dart';
 
 class Register extends StatefulWidget {
   const Register({super.key});
@@ -61,7 +60,6 @@ class _RegisterState extends State<Register> {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Container(

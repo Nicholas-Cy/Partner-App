@@ -1,6 +1,3 @@
-import 'package:beamcoda_jobs_partners_flutter/data/job.dart';
-import 'package:beamcoda_jobs_partners_flutter/data/subscription.dart';
-import 'package:beamcoda_jobs_partners_flutter/ui/authentication/login.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,8 +8,10 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'firebase_options.dart';
 
 import './data/auth.dart';
-import 'ui/authentication/login.dart';
 import './ui/layout.dart';
+import './data/job.dart';
+import './data/subscription.dart';
+import './ui/authentication/login.dart';
 
 String? fcmToken;
 

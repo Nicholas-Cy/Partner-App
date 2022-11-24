@@ -1,7 +1,4 @@
 import 'dart:convert';
-import 'package:beamcoda_jobs_partners_flutter/data/auth.dart';
-import 'package:beamcoda_jobs_partners_flutter/types/notification_settings.dart';
-import 'package:beamcoda_jobs_partners_flutter/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -9,6 +6,9 @@ import 'package:http/http.dart' as http;
 
 import '../../../components/main/switch.dart';
 import '../../theme_data/fonts.dart';
+import '../../../data/auth.dart';
+import '../../../types/notification_settings.dart';
+import '../../../utils/constants.dart';
 
 class NotificationsPage extends StatefulWidget {
   const NotificationsPage({super.key});
@@ -181,7 +181,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                         SizedBox(
                           height: 30.0,
                           child: CustomToggleSwitch(
-                            value: settings!.jobExpiry,
+                            value: settings.jobExpiry,
                             key: UniqueKey(),
                             onChange: () {
                               saveNotificationSettings(context, 'jobexpiry');
