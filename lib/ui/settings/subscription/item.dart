@@ -29,7 +29,7 @@ class PackageItem extends StatelessWidget {
               Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (BuildContext context) =>
-                      PayInvoicePage(key: UniqueKey(), id: package.id),
+                      PayInvoicePage(key: UniqueKey(), id: value),
                 ),
               ),
             });
@@ -62,7 +62,7 @@ class PackageItem extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         if (userProvider.partner.packageId != package.id) {
-          if (int.parse(package.price) > 0) {
+          if (double.parse(package.price) > 0) {
             showCreateInvoiceDialog(context);
           }
         }

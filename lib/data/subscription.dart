@@ -71,7 +71,7 @@ class SubscriptionProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> createInvoice(BuildContext context, Subscription package) async {
+  Future<int> createInvoice(BuildContext context, Subscription package) async {
     final userProvider = Provider.of<AuthProvider>(context, listen: false);
     String? token = await userProvider.getToken();
     final userId = userProvider.partner.id;
@@ -100,7 +100,10 @@ class SubscriptionProvider extends ChangeNotifier {
     );
 
     if (response.statusCode == 201) {
-      return;
+      Map<String, dynamic> responseJson = json.decode(response.body);
+      int invoiceId = responseJson["data"]["id"];
+
+      return invoiceId;
     } else {
       throw Exception('Couldn\'t create an invoice.');
     }
