@@ -143,10 +143,22 @@ class AuthProvider extends ChangeNotifier {
   }
 
   logout() async {
-    _isAuthenticated = false;
-    notifyListeners();
+    String? token = await getToken();
+    final Uri logout =
+        Uri.parse("${AppConstants.API_URL}${AppConstants.PARTNER_LOGOUT}");
+    final logoutResponse = await http.get(logout, headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token'
+    });
 
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.clear();
+    if (logoutResponse.statusCode == 200) {
+      _isAuthenticated = false;
+      notifyListeners();
+
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.clear();
+    } else {
+      throw Exception("Couldn't log out.");
+    }
   }
 }

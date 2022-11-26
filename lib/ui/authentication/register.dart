@@ -63,7 +63,7 @@ class _RegisterState extends State<Register> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Container(
-        color: Colors.black,
+        color: Colors.black54,
         child: Stack(
           alignment: Alignment.topCenter,
           children: [

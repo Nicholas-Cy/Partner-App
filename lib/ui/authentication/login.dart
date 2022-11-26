@@ -51,7 +51,7 @@ class _LoginPageState extends State<LoginPage> {
       body: Form(
         key: _formKey,
         child: Container(
-          color: Colors.black,
+          color: Colors.black12,
           child: Stack(
             alignment: Alignment.topCenter,
             children: [

@@ -1,8 +1,8 @@
 // ignore_for_file: constant_identifier_names
 
 class AppConstants {
-  static const String API_URL = "http://192.168.8.173.nip.io:8000";
-  static const String STATIC_WEB_URL = "http://codajobs.beamcoda.com";
+  static const String API_URL = "http://codajobs-admin.beamcoda.com";
+  static const String STATIC_WEB_URL = "https://codajobs.beamcoda.com";
   static const String CURRENCY_PREFIX = "\$";
 
   // Upload urls
@@ -13,6 +13,7 @@ class AppConstants {
   static const String REGISTER_PARTNER = "/api/partner/register";
   static const String PARTNER_SAVE_PROFILE = "/api/partner/edit-partner";
   static const String PARTNER_LOGIN = "/api/partner/auth/login";
+  static const String PARTNER_LOGOUT = "/api/partner/auth/logout";
   static const String PARTNER_DETAILS = "/api/partner/auth/details";
   static const String PARTNER_DELETE_URL = "/api/partner/delete";
   static const String PARTNER_NOTIFICATION_SAVE_SETTINGS =
