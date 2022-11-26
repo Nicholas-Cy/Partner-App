@@ -51,13 +51,13 @@ class _LoginPageState extends State<LoginPage> {
       body: Form(
         key: _formKey,
         child: Container(
-          color: Colors.black12,
+          color: Colors.white,
           child: Stack(
             alignment: Alignment.topCenter,
             children: [
               // BG Splash
               Positioned(
-                top: 100.0,
+                top: 170.0,
                 child: Image(
                   width: width + 200.0,
                   fit: BoxFit.cover,
@@ -77,7 +77,7 @@ class _LoginPageState extends State<LoginPage> {
                     children: [
                       const SizedBox(height: 200.0),
                       const Image(
-                        width: 80.0,
+                        width: 100.0,
                         fit: BoxFit.contain,
                         image: AssetImage('assets/images/logo.png'),
                       ),
@@ -93,7 +93,10 @@ class _LoginPageState extends State<LoginPage> {
                           child: Text("PARTNER | LOGIN",
                               softWrap: true,
                               style: GoogleFonts.dmSans(
-                                  textStyle: FontThemeData.btnText)),
+                                textStyle: FontThemeData.btnText,
+                                fontWeight: FontWeight.w900,
+                                color: Colors.black,
+                              )),
                         ),
                       ),
                       Padding(
@@ -163,7 +166,8 @@ class _LoginPageState extends State<LoginPage> {
                             child: Text(
                               "Forgot Password?",
                               style: GoogleFonts.dmSans(
-                                  textStyle: FontThemeData.btnText),
+                                  textStyle: FontThemeData.btnText,
+                                  color: Colors.white),
                               textAlign: TextAlign.left,
                             ),
                           ),

@@ -69,7 +69,7 @@ class _RegisterState extends State<Register> {
           children: [
             // BG Splash
             Positioned(
-              top: 100.0,
+              top: 150.0,
               child: Image(
                 width: width + 200.0,
                 fit: BoxFit.cover,
@@ -107,7 +107,9 @@ class _RegisterState extends State<Register> {
                           child: Text("PARTNER | REGISTER",
                               softWrap: true,
                               style: GoogleFonts.dmSans(
-                                  textStyle: FontThemeData.btnText)),
+                                  textStyle: FontThemeData.btnText,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w900)),
                         ),
                       ),
                       Padding(
