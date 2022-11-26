@@ -56,12 +56,45 @@ class MyApp extends StatelessWidget {
           textTheme: GoogleFonts.dmSansTextTheme(),
         ),
         home: Consumer<AuthProvider>(builder: (context, auth, child) {
-          switch (auth.isAuthenticated) {
-            case false:
-              return const LoginPage();
-            default:
-              return LayoutPage(key: GlobalKey());
-          }
+          return FutureBuilder(
+            future: auth.checkLogin(context),
+            builder: (context, future) {
+              final isAuth = future.data;
+              switch (isAuth) {
+                case false:
+                  return const LoginPage();
+                default:
+                  return FutureBuilder(
+                    future: auth.getUserDetails(context),
+                    builder: (context, AsyncSnapshot snapshot) {
+                      if (snapshot.hasData &&
+                          snapshot.connectionState == ConnectionState.done) {
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          Navigator.of(context).pop();
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  LayoutPage(key: UniqueKey()),
+                            ),
+                          );
+                        });
+                        // return LayoutPage(key: GlobalKey());
+                      }
+                      return Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height,
+                        color: Colors.white,
+                        child: Center(
+                          child: CircularProgressIndicator(
+                            color: Colors.teal.shade400,
+                          ),
+                        ),
+                      );
+                    },
+                  );
+              }
+            },
+          );
         }),
       ),
     );

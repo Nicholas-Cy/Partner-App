@@ -18,6 +18,21 @@ class AuthProvider extends ChangeNotifier {
   bool get isAuthenticated => _isAuthenticated;
   Partner get partner => _partner;
 
+  Future<bool> checkLogin(BuildContext context) async {
+    final prefs = await SharedPreferences.getInstance();
+    final auth = prefs.getBool('auth');
+
+    if (auth == null) {
+      return false;
+    }
+
+    if (auth) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   Future<bool> register(RegisterPartner partner) async {
     final Uri uri =
         Uri.parse('${AppConstants.API_URL}${AppConstants.REGISTER_PARTNER}');
@@ -59,6 +74,8 @@ class AuthProvider extends ChangeNotifier {
     if (response.statusCode == 200) {
       Map<String, dynamic> data = json.decode(response.body);
       String token = data['data']['token'];
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('auth', true);
       await saveToken(token);
       _isAuthenticated = true;
 
@@ -100,7 +117,7 @@ class AuthProvider extends ChangeNotifier {
     return '';
   }
 
-  Future<void> getUserDetails(BuildContext context) async {
+  Future<bool> getUserDetails(BuildContext context) async {
     String? token = await getToken();
     final userDetails = await http.get(
         Uri.parse('${AppConstants.API_URL}${AppConstants.PARTNER_DETAILS}'),
@@ -112,7 +129,12 @@ class AuthProvider extends ChangeNotifier {
     if (userDetails.statusCode == 200) {
       Map<String, dynamic> userDetailsJson = json.decode(userDetails.body);
       _partner = Partner.fromJson(userDetailsJson["data"]);
+
+      return true;
     }
+
+    notifyListeners();
+    return false;
   }
 
   getDeviceId() async {
