@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
-import 'package:url_launcher/url_launcher.dart';
+// import 'package:url_launcher/url_launcher.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 
 import '../ui/theme_data/fonts.dart';
 import '../data/auth.dart';
@@ -140,12 +142,20 @@ class _JobApplicantListItemState extends State<JobApplicantListItem> {
             ),
             (widget.applicant.shortlisted)
                 ? IconButton(
-                    padding: EdgeInsets.symmetric(horizontal: 10.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
                     onPressed: () async {
-                      if (!await launchUrl(
-                          Uri.parse(widget.applicant.resumeLink))) {
-                        throw 'Could not launch ${widget.applicant.resumeLink}';
-                      }
+                      String dir =
+                          (await getApplicationDocumentsDirectory()).path;
+                      await FlutterDownloader.enqueue(
+                        url: widget.applicant.resumeLink,
+                        savedDir: dir,
+                        showNotification: true,
+                        openFileFromNotification: true,
+                      );
+                      // if (!await launchUrl(
+                      //     Uri.parse(widget.applicant.resumeLink))) {
+                      //   throw 'Could not launch ${widget.applicant.resumeLink}';
+                      // }
                     },
                     icon: const Icon(
                       Icons.file_download_outlined,
