@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import '../theme_data/fonts.dart';
-import '../../components/shared/job-item.dart';
+import '../../components/shared/job_item.dart';
 import '../../data/job.dart';
 
 class HomePage extends StatefulWidget {

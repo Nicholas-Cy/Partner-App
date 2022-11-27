@@ -1,10 +1,14 @@
+import 'dart:io';
+
+import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
-// import 'package:url_launcher/url_launcher.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:open_filex/open_filex.dart';
 
 import '../ui/theme_data/fonts.dart';
 import '../data/auth.dart';
@@ -23,6 +27,56 @@ class JobApplicantListItem extends StatefulWidget {
 }
 
 class _JobApplicantListItemState extends State<JobApplicantListItem> {
+  late String _localPath;
+  late bool _permissionReady;
+  late TargetPlatform? platform;
+
+  @override
+  void initState() {
+    super.initState();
+    if (Platform.isAndroid) {
+      platform = TargetPlatform.android;
+    } else {
+      platform = TargetPlatform.iOS;
+    }
+  }
+
+  Future<bool> _checkPermission() async {
+    if (platform == TargetPlatform.android) {
+      final status = await Permission.storage.status;
+      if (status != PermissionStatus.granted) {
+        final result = await Permission.storage.request();
+        if (result == PermissionStatus.granted) {
+          return true;
+        }
+      } else {
+        return true;
+      }
+    } else {
+      return true;
+    }
+    return false;
+  }
+
+  Future<void> _prepareSaveDir() async {
+    _localPath = (await _findLocalPath())!;
+
+    final savedDir = Directory(_localPath);
+    bool hasExisted = await savedDir.exists();
+    if (!hasExisted) {
+      savedDir.create();
+    }
+  }
+
+  Future<String?> _findLocalPath() async {
+    if (platform == TargetPlatform.android) {
+      return "/storage/emulated/0/Download";
+    } else {
+      var directory = await getApplicationDocumentsDirectory();
+      return '${directory.path}${Platform.pathSeparator}Download';
+    }
+  }
+
   Future<void> shortlistCandidate(BuildContext ctx) async {
     final userProvider = Provider.of<AuthProvider>(ctx, listen: false);
     String? token = await userProvider.getToken();
@@ -144,18 +198,25 @@ class _JobApplicantListItemState extends State<JobApplicantListItem> {
                 ? IconButton(
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
                     onPressed: () async {
-                      String dir =
-                          (await getApplicationDocumentsDirectory()).path;
-                      await FlutterDownloader.enqueue(
-                        url: widget.applicant.resumeLink,
-                        savedDir: dir,
-                        showNotification: true,
-                        openFileFromNotification: true,
-                      );
-                      // if (!await launchUrl(
-                      //     Uri.parse(widget.applicant.resumeLink))) {
-                      //   throw 'Could not launch ${widget.applicant.resumeLink}';
-                      // }
+                      _permissionReady = await _checkPermission();
+                      if (_permissionReady) {
+                        await _prepareSaveDir();
+                        try {
+                          await Dio()
+                              .download(widget.applicant.resumeLink,
+                                  "$_localPath/${widget.applicant.resumeLink.split('/').last}")
+                              .then((value) {
+                            if (value.statusCode == 200) {
+                              OpenFilex.open(
+                                  "$_localPath/${widget.applicant.resumeLink.split('/').last}");
+                            }
+                          });
+                        } catch (e) {
+                          if (kDebugMode) {
+                            print("Download Failed.\n\n$e");
+                          }
+                        }
+                      }
                     },
                     icon: const Icon(
                       Icons.file_download_outlined,

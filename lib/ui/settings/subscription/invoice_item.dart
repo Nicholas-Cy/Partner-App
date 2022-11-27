@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../types/invoice.dart';
-import '../../../ui/settings/subscription/payInvoice.dart';
+import 'pay_invoice.dart';
 
 class InvoiceItem extends StatelessWidget {
   final Invoice invoice;

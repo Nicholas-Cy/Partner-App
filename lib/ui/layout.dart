@@ -22,7 +22,7 @@ class _LayoutPageState extends State<LayoutPage> {
   late int _currentIndex = 0;
   final List _screens = [
     const HomePage(),
-    ProfilePage(),
+    const ProfilePage(),
     const SettingsPage(),
   ];
 

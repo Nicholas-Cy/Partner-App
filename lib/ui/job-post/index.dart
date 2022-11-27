@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
 import '../theme_data/fonts.dart';
-import '../../components/job-applicant-list-item.dart';
+import '../../components/job_applicant_list_item.dart';
 import '../../data/auth.dart';
 import '../../types/job_applicant.dart';
 import '../../types/job_post_detailed.dart';

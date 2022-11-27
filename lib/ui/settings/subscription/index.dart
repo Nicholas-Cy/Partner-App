@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../../data/auth.dart';
 import '../../../data/subscription.dart';
-import '../../../ui/settings/subscription/invoiceItem.dart';
+import 'invoice_item.dart';
 import '../../../ui/settings/subscription/item.dart';
 import '../../../ui/theme_data/fonts.dart';
 

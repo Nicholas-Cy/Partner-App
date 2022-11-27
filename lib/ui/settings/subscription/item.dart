@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import '../../../data/auth.dart';
-import '../../../ui/settings/subscription/payInvoice.dart';
+import 'pay_invoice.dart';
 import '../../../data/subscription.dart';
 import '../../../types/subscription.dart';
 import '../../../ui/theme_data/fonts.dart';

@@ -13,7 +13,7 @@ import '../theme_data/fonts.dart';
 import '../theme_data/inputs.dart';
 
 class ProfilePage extends StatefulWidget {
-  ProfilePage({super.key});
+  const ProfilePage({super.key});
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
