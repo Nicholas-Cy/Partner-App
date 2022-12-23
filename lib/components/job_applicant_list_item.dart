@@ -4,15 +4,15 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
+import 'package:open_filex/open_filex.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
-import 'package:http/http.dart' as http;
-import 'package:path_provider/path_provider.dart';
-import 'package:open_filex/open_filex.dart';
 
-import '../ui/theme_data/fonts.dart';
 import '../data/auth.dart';
 import '../types/job_applicant.dart';
+import '../ui/theme_data/fonts.dart';
 import '../utils/constants.dart';
 
 class JobApplicantListItem extends StatefulWidget {
@@ -64,7 +64,7 @@ class _JobApplicantListItemState extends State<JobApplicantListItem> {
     final savedDir = Directory(_localPath);
     bool hasExisted = await savedDir.exists();
     if (!hasExisted) {
-      savedDir.create();
+      await savedDir.create();
     }
   }
 
@@ -148,7 +148,7 @@ class _JobApplicantListItemState extends State<JobApplicantListItem> {
     // show the dialog
     showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (context) {
         return alert;
       },
     );

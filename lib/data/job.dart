@@ -1,12 +1,13 @@
 import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 import './auth.dart';
-import '../types/jobpostcompact.dart';
 import '../types/category.dart';
 import '../types/job_types.dart';
+import '../types/jobpostcompact.dart';
 import '../types/new_post.dart';
 import '../types/post_duration.dart';
 import '../types/skill.dart';

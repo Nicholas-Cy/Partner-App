@@ -4,9 +4,9 @@ import 'package:provider/provider.dart';
 
 import '../../../data/auth.dart';
 import '../../../data/subscription.dart';
-import 'invoice_item.dart';
 import '../../../ui/settings/subscription/item.dart';
 import '../../../ui/theme_data/fonts.dart';
+import 'invoice_item.dart';
 
 class SubscriptionPage extends StatefulWidget {
   const SubscriptionPage({super.key});
@@ -31,9 +31,11 @@ class _SubscriptionPageState extends State<SubscriptionPage>
       final userProvider = Provider.of<AuthProvider>(context, listen: false);
       final subscriptionProvider =
           Provider.of<SubscriptionProvider>(context, listen: false);
-      userProvider.getUserDetails(context);
-      subscriptionProvider.loadPackages(context);
-      subscriptionProvider.loadInvoices(context);
+      await userProvider.getUserDetails(context);
+      // ignore: use_build_context_synchronously
+      await subscriptionProvider.loadPackages(context);
+      // ignore: use_build_context_synchronously
+      await subscriptionProvider.loadInvoices(context);
     });
   }
 

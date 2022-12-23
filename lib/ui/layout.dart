@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-import './theme_data/fonts.dart';
-import './job-post/new/index.dart';
-
 import './homepage/index.dart';
+import './job-post/new/index.dart';
 import './profile/index.dart';
 import './settings/index.dart';
+import './theme_data/fonts.dart';
 import '../data/auth.dart';
 import '../ui/authentication/login.dart';
 
@@ -72,9 +71,9 @@ class _LayoutPageState extends State<LayoutPage> {
                 Navigator.of(context).pop();
                 Navigator.of(context).pushAndRemoveUntil(
                     MaterialPageRoute(
-                      builder: (BuildContext context) => const LoginPage(),
+                      builder: (context) => const LoginPage(),
                     ),
-                    (Route<dynamic> route) => false);
+                    (route) => false);
               },
               child: Row(
                 children: [
@@ -119,8 +118,7 @@ class _LayoutPageState extends State<LayoutPage> {
                       onPressed: () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                                const NewJobPost(),
+                            builder: (context) => const NewJobPost(),
                           ),
                         );
                       },

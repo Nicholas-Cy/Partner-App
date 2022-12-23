@@ -1,19 +1,20 @@
 import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
-import '../../theme_data/fonts.dart';
-import '../../theme_data/inputs.dart';
 import '../../../data/auth.dart';
 import '../../../data/job.dart';
 import '../../../types/category.dart';
-import '../../../types/job_types.dart';
 import '../../../types/edit_post.dart';
+import '../../../types/job_types.dart';
 import '../../../types/skill.dart';
 import '../../../utils/constants.dart';
+import '../../theme_data/fonts.dart';
+import '../../theme_data/inputs.dart';
 
 class EditJobPost extends StatefulWidget {
   final int id;
@@ -30,7 +31,7 @@ class _EditJobPostState extends State<EditJobPost> {
   late EditPost editPost;
   bool isLoaded = false;
 
-  void initJob(BuildContext ctx) async {
+  Future<void> initJob(BuildContext ctx) async {
     final jobProvider = Provider.of<JobProvider>(ctx, listen: false);
     final userProvider = Provider.of<AuthProvider>(ctx, listen: false);
     String? token = await userProvider.getToken();
@@ -67,7 +68,7 @@ class _EditJobPostState extends State<EditJobPost> {
     initJob(context);
   }
 
-  void saveJob(BuildContext ctx) async {
+  Future<void> saveJob(BuildContext ctx) async {
     final userProvider = Provider.of<AuthProvider>(ctx, listen: false);
     final jobProvider = Provider.of<JobProvider>(ctx, listen: false);
     String? token = await userProvider.getToken();
@@ -186,7 +187,7 @@ class _EditJobPostState extends State<EditJobPost> {
     // show the dialog
     showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (context) {
         return alert;
       },
     );
@@ -450,8 +451,8 @@ class _EditJobPostState extends State<EditJobPost> {
                               child: DropdownButton<int>(
                                 value: editPost.category,
                                 isExpanded: true,
-                                items: industryTypes.map<DropdownMenuItem<int>>(
-                                    (Category type) {
+                                items: industryTypes
+                                    .map<DropdownMenuItem<int>>((type) {
                                   return DropdownMenuItem<int>(
                                     value: type.id,
                                     child: Text(type.name),
@@ -637,8 +638,8 @@ class _EditJobPostState extends State<EditJobPost> {
                               child: DropdownButton<int>(
                                 value: editPost.jobType,
                                 isExpanded: true,
-                                items: jobTypes
-                                    .map<DropdownMenuItem<int>>((JobType type) {
+                                items:
+                                    jobTypes.map<DropdownMenuItem<int>>((type) {
                                   return DropdownMenuItem<int>(
                                     value: type.id,
                                     child: Text(type.name),

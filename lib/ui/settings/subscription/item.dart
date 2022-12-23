@@ -3,10 +3,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import '../../../data/auth.dart';
-import 'pay_invoice.dart';
 import '../../../data/subscription.dart';
 import '../../../types/subscription.dart';
 import '../../../ui/theme_data/fonts.dart';
+import 'pay_invoice.dart';
 
 class PackageItem extends StatelessWidget {
   final Subscription package;
@@ -25,14 +25,16 @@ class PackageItem extends StatelessWidget {
       ),
       child: Text("Yes, Subscribe", style: GoogleFonts.dmSans()),
       onPressed: () async {
-        subscriptionProvider.createInvoice(context, package).then((value) => {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (BuildContext context) =>
-                      PayInvoicePage(key: UniqueKey(), id: value),
+        await subscriptionProvider.createInvoice(context, package).then(
+              (value) => {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        PayInvoicePage(key: UniqueKey(), id: value),
+                  ),
                 ),
-              ),
-            });
+              },
+            );
       },
     );
     // set up the AlertDialog
@@ -49,7 +51,7 @@ class PackageItem extends StatelessWidget {
     // show the dialog
     showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (context) {
         return alert;
       },
     );

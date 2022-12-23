@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-import '../theme_data/fonts.dart';
-import '../theme_data/inputs.dart';
 import '../../data/auth.dart';
 import '../../types/register_partner.dart';
+import '../theme_data/fonts.dart';
+import '../theme_data/inputs.dart';
 
 class Register extends StatefulWidget {
   const Register({super.key});
@@ -271,7 +271,7 @@ class _RegisterState extends State<Register> {
                             value: _registerPartner.employeeCount,
                             isExpanded: true,
                             dropdownColor: Colors.black.withOpacity(0.25),
-                            items: companySizes.map((String range) {
+                            items: companySizes.map((range) {
                               return DropdownMenuItem(
                                 value: range,
                                 child: Padding(

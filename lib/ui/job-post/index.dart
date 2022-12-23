@@ -1,18 +1,19 @@
 import 'dart:convert';
+
 import 'package:beamcoda_jobs_partners_flutter/data/job.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:http/http.dart' as http;
 
-import '../theme_data/fonts.dart';
+import './edit/index.dart';
 import '../../components/job_applicant_list_item.dart';
 import '../../data/auth.dart';
 import '../../types/job_applicant.dart';
 import '../../types/job_post_detailed.dart';
 import '../../utils/constants.dart';
-import './edit/index.dart';
+import '../theme_data/fonts.dart';
 // import '../../components/job-activity-list-item.dart';
 
 class ViewJobPost extends StatefulWidget {
@@ -50,7 +51,7 @@ class _ViewJobPostState extends State<ViewJobPost>
     )
   ];
 
-  void initJob(BuildContext ctx) async {
+  Future<void> initJob(BuildContext ctx) async {
     final userProvider = Provider.of<AuthProvider>(ctx, listen: false);
     String? token = await userProvider.getToken();
     final Uri url = Uri.parse(
@@ -79,7 +80,7 @@ class _ViewJobPostState extends State<ViewJobPost>
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      initJob(context);
+      await initJob(context);
     });
   }
 
@@ -97,7 +98,7 @@ class _ViewJobPostState extends State<ViewJobPost>
       // ignore: use_build_context_synchronously
       final jobProvider = Provider.of<JobProvider>(context, listen: false);
       // ignore: use_build_context_synchronously
-      jobProvider.loadJobs(context);
+      await jobProvider.loadJobs(context);
       return;
     } else {
       throw Exception('Trouble removing the resume from the user');
@@ -116,7 +117,7 @@ class _ViewJobPostState extends State<ViewJobPost>
 
     if (response.statusCode == 200) {
       // ignore: use_build_context_synchronously
-      initJob(context);
+      await initJob(context);
       return;
     } else {
       throw Exception('Trouble toggling job status');
@@ -179,7 +180,7 @@ class _ViewJobPostState extends State<ViewJobPost>
     // show the dialog
     showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (context) {
         return alert;
       },
     );
@@ -502,7 +503,7 @@ class _ViewJobPostState extends State<ViewJobPost>
                 onPressed: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (BuildContext context) => EditJobPost(
+                      builder: (context) => EditJobPost(
                           key: UniqueKey(),
                           id: jobPost.id,
                           callback: () => initJob(context)),

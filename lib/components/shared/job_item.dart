@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
-import '../../ui/theme_data/fonts.dart';
-import '../../ui/job-post/index.dart';
 import '../../types/jobpostcompact.dart';
+import '../../ui/job-post/index.dart';
+import '../../ui/theme_data/fonts.dart';
 
 class JobPost extends StatelessWidget {
   final JobPostCompact jobPost;
@@ -17,8 +17,7 @@ class JobPost extends StatelessWidget {
       onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (BuildContext context) =>
-                ViewJobPost(key: UniqueKey(), id: jobPost.id),
+            builder: (context) => ViewJobPost(key: UniqueKey(), id: jobPost.id),
           ),
         );
       },

@@ -1,12 +1,13 @@
 import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
-import '../../../data/subscription.dart';
 import '../../../data/auth.dart';
+import '../../../data/subscription.dart';
 import '../../../ui/theme_data/fonts.dart';
 import '../../../ui/theme_data/inputs.dart';
 import '../../../utils/constants.dart';
@@ -76,9 +77,9 @@ class _PayInvoicePageState extends State<PayInvoicePage> {
 
     if (response.statusCode == 200) {
       // ignore: use_build_context_synchronously
-      subscriptionProvider.loadInvoices(context);
+      await subscriptionProvider.loadInvoices(context);
       // ignore: use_build_context_synchronously
-      subscriptionProvider.loadPackages(context);
+      await subscriptionProvider.loadPackages(context);
       // ignore: use_build_context_synchronously
       Navigator.of(context).pop();
       return;

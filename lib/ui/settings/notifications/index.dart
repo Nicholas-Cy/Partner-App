@@ -1,14 +1,15 @@
 import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 import '../../../components/main/switch.dart';
-import '../../theme_data/fonts.dart';
 import '../../../data/auth.dart';
 import '../../../types/notification_settings.dart';
 import '../../../utils/constants.dart';
+import '../../theme_data/fonts.dart';
 
 class NotificationsPage extends StatefulWidget {
   const NotificationsPage({super.key});

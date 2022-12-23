@@ -17,7 +17,7 @@ class InvoiceItem extends StatelessWidget {
         if (invoice.isPaid == false) {
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (BuildContext context) =>
+              builder: (context) =>
                   PayInvoicePage(key: UniqueKey(), id: invoice.id),
             ),
           );

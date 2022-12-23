@@ -4,10 +4,10 @@ class CustomToggleSwitch extends StatefulWidget {
   final bool value;
   final Function onChange;
   const CustomToggleSwitch({
-    Key? key,
+    super.key,
     required this.value,
     required this.onChange,
-  }) : super(key: key);
+  });
 
   @override
   State<CustomToggleSwitch> createState() => _CustomToggleSwitchState();

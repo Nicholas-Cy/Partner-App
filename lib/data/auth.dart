@@ -1,15 +1,16 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
-import 'dart:io';
-import 'dart:convert';
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../utils/constants.dart';
 import '../types/partner.dart';
 import '../types/register_partner.dart';
+import '../utils/constants.dart';
 
 class AuthProvider extends ChangeNotifier {
   late Partner _partner;

@@ -1,14 +1,15 @@
 import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:http/http.dart' as http;
 
-import '../../theme_data/fonts.dart';
 import '../../../data/auth.dart';
 import '../../../ui/authentication/login.dart';
 import '../../../utils/constants.dart';
+import '../../theme_data/fonts.dart';
 
 class PrivacySecurityPage extends StatefulWidget {
   const PrivacySecurityPage({super.key});
@@ -44,11 +45,11 @@ class _PrivacySecurityPageState extends State<PrivacySecurityPage> {
       // ignore: use_build_context_synchronously
       Navigator.of(ctx).pop();
       // ignore: use_build_context_synchronously
-      Navigator.of(ctx).pushAndRemoveUntil(
+      await Navigator.of(ctx).pushAndRemoveUntil(
           MaterialPageRoute(
-            builder: (BuildContext context) => const LoginPage(),
+            builder: (context) => const LoginPage(),
           ),
-          (Route<dynamic> route) => false);
+          (route) => false);
       return;
     } else {
       throw Exception("Couldn't delete partner profile.");
@@ -107,7 +108,7 @@ class _PrivacySecurityPageState extends State<PrivacySecurityPage> {
     // show the dialog
     showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (context) {
         return alert;
       },
     );

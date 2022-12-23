@@ -1,12 +1,11 @@
 import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
-import '../../theme_data/fonts.dart';
-import '../../theme_data/inputs.dart';
 import '../../../data/auth.dart';
 import '../../../data/job.dart';
 import '../../../types/category.dart';
@@ -14,6 +13,8 @@ import '../../../types/job_types.dart';
 import '../../../types/post_duration.dart';
 import '../../../types/skill.dart';
 import '../../../utils/constants.dart';
+import '../../theme_data/fonts.dart';
+import '../../theme_data/inputs.dart';
 
 class NewJobPost extends StatefulWidget {
   const NewJobPost({super.key});
@@ -28,7 +29,7 @@ class _NewJobPostState extends State<NewJobPost> {
     super.initState();
   }
 
-  void saveJob(BuildContext ctx) async {
+  Future<void> saveJob(BuildContext ctx) async {
     final userProvider = Provider.of<AuthProvider>(ctx, listen: false);
     final jobProvider = Provider.of<JobProvider>(ctx, listen: false);
     String? token = await userProvider.getToken();
@@ -66,7 +67,7 @@ class _NewJobPostState extends State<NewJobPost> {
     if (response.statusCode == 201) {
       jobProvider.jobSkills.clear();
       // ignore: use_build_context_synchronously
-      jobProvider.loadJobs(context);
+      await jobProvider.loadJobs(context);
       // ignore: use_build_context_synchronously
       Navigator.of(context).pop();
     } else {
@@ -148,7 +149,7 @@ class _NewJobPostState extends State<NewJobPost> {
     // show the dialog
     showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (context) {
         return alert;
       },
     );
@@ -406,8 +407,8 @@ class _NewJobPostState extends State<NewJobPost> {
                               child: DropdownButton<int>(
                                 value: jobProvider.newPost.category,
                                 isExpanded: true,
-                                items: industryTypes.map<DropdownMenuItem<int>>(
-                                    (Category type) {
+                                items: industryTypes
+                                    .map<DropdownMenuItem<int>>((type) {
                                   return DropdownMenuItem<int>(
                                     value: type.id,
                                     child: Text(type.name),
@@ -585,8 +586,8 @@ class _NewJobPostState extends State<NewJobPost> {
                               child: DropdownButton<int>(
                                 value: jobProvider.newPost.jobType,
                                 isExpanded: true,
-                                items: jobTypes
-                                    .map<DropdownMenuItem<int>>((JobType type) {
+                                items:
+                                    jobTypes.map<DropdownMenuItem<int>>((type) {
                                   return DropdownMenuItem<int>(
                                     value: type.id,
                                     child: Text(type.name),
@@ -765,8 +766,8 @@ class _NewJobPostState extends State<NewJobPost> {
                               child: DropdownButton<int>(
                                 value: jobProvider.newPost.jobActiveDuration,
                                 isExpanded: true,
-                                items: jobDurations.map<DropdownMenuItem<int>>(
-                                    (PostDuration type) {
+                                items: jobDurations
+                                    .map<DropdownMenuItem<int>>((type) {
                                   return DropdownMenuItem<int>(
                                     value: type.id,
                                     child: Text(type.name),

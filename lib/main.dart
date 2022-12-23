@@ -1,17 +1,17 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'firebase_options.dart';
+import 'package:provider/provider.dart';
 
 import './data/auth.dart';
-import './ui/layout.dart';
 import './data/job.dart';
 import './data/subscription.dart';
 import './ui/authentication/login.dart';
+import './ui/layout.dart';
+import 'firebase_options.dart';
 
 String? fcmToken;
 
@@ -32,14 +32,14 @@ Future<void> main() async {
   fcmToken = await FirebaseMessaging.instance.getToken();
   runApp(
     ChangeNotifierProvider(
-      create: (BuildContext context) => AuthProvider(),
+      create: (context) => AuthProvider(),
       child: const MyApp(),
     ),
   );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -66,14 +66,14 @@ class MyApp extends StatelessWidget {
                 default:
                   return FutureBuilder(
                     future: auth.getUserDetails(context),
-                    builder: (context, AsyncSnapshot snapshot) {
+                    builder: (context, snapshot) {
                       if (snapshot.hasData &&
                           snapshot.connectionState == ConnectionState.done) {
                         WidgetsBinding.instance.addPostFrameCallback((_) {
                           Navigator.of(context).pop();
                           Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (BuildContext context) =>
+                              builder: (context) =>
                                   LayoutPage(key: UniqueKey()),
                             ),
                           );

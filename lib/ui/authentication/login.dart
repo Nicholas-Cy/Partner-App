@@ -4,14 +4,14 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../data/auth.dart';
-import '../theme_data/fonts.dart';
-import '../theme_data/inputs.dart';
 import '../../ui/authentication/register.dart';
 import '../../utils/constants.dart';
 import '../layout.dart';
+import '../theme_data/fonts.dart';
+import '../theme_data/inputs.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+  const LoginPage({super.key});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -36,7 +36,8 @@ class _LoginPageState extends State<LoginPage> {
       });
     } else {
       // ignore: use_build_context_synchronously
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+      await Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) {
         return LayoutPage(key: GlobalKey());
       }));
     }

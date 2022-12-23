@@ -1,13 +1,14 @@
-import 'dart:io';
 import 'dart:convert';
+import 'dart:io';
+
 import 'package:beamcoda_jobs_partners_flutter/data/auth.dart';
 import 'package:beamcoda_jobs_partners_flutter/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:http/http.dart' as http;
 
 import '../theme_data/fonts.dart';
 import '../theme_data/inputs.dart';
@@ -86,7 +87,7 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
-  void saveProfile(BuildContext ctx) async {
+  Future<void> saveProfile(BuildContext ctx) async {
     final userProvider = Provider.of<AuthProvider>(ctx, listen: false);
     String? token = await userProvider.getToken();
     late String imgUrl;
@@ -117,7 +118,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
     if (response.statusCode == 200) {
       // ignore: use_build_context_synchronously
-      userProvider.getUserDetails(context);
+      await userProvider.getUserDetails(context);
       setState(() {
         msg = 'Profile Information Saved.';
       });
@@ -342,7 +343,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             value: authProvider.partner.empCount,
                             isExpanded: true,
                             items: companySizes
-                                .map<DropdownMenuItem<String>>((String size) {
+                                .map<DropdownMenuItem<String>>((size) {
                               return DropdownMenuItem(
                                 value: size,
                                 child: Text(size),
