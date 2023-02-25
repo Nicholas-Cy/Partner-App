@@ -49,7 +49,7 @@ class _HomePageState extends State<HomePage> {
       physics: const BouncingScrollPhysics(),
       scrollDirection: Axis.vertical,
       child: Container(
-        color: const Color.fromRGBO(248, 248, 248, 1.0),
+        color: Theme.of(context).backgroundColor,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0),
           child: Column(
@@ -60,8 +60,8 @@ class _HomePageState extends State<HomePage> {
               Text(
                 "Posted Jobs",
                 style: GoogleFonts.dmSans(
-                  textStyle: FontThemeData.sectionTitles,
-                ),
+                    textStyle: FontThemeData.sectionTitles,
+                    color: Theme.of(context).primaryColor),
                 textAlign: TextAlign.left,
               ),
               const SizedBox(height: 20.0),

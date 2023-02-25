@@ -1,4 +1,6 @@
+import 'package:beamcoda_jobs_partners_flutter/logic/cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../types/invoice.dart';
@@ -12,6 +14,8 @@ class InvoiceItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
+    final themeCubit = context.read<SwitchCubit>();
+    final isDarkThemeOn = themeCubit.state.isDarkThemeOn;
     return GestureDetector(
       onTap: () {
         if (invoice.isPaid == false) {
@@ -39,6 +43,7 @@ class InvoiceItem extends StatelessWidget {
             borderRadius: const BorderRadius.all(
               Radius.circular(10.0),
             ),
+            color: (isDarkThemeOn) ? Theme.of(context).primaryColor : null,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

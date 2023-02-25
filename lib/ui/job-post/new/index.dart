@@ -174,30 +174,31 @@ class _NewJobPostState extends State<NewJobPost> {
             Container(
               width: 1.0,
               height: 20.0,
-              decoration: const BoxDecoration(color: Colors.black),
+              decoration: BoxDecoration(color: Theme.of(context).primaryColor),
             ),
             const SizedBox(width: 10.0),
             Text(
               "PARTNER",
-              style:
-                  GoogleFonts.dmSans(textStyle: FontThemeData.partnerHeading),
+              style: GoogleFonts.dmSans(
+                  textStyle: FontThemeData.partnerHeading,
+                  color: Theme.of(context).primaryColor),
             ),
           ],
         ),
         toolbarHeight: 80.0,
         elevation: 0,
-        backgroundColor: const Color.fromRGBO(248, 248, 248, 1.0),
+        backgroundColor: Theme.of(context).backgroundColor,
         shadowColor: Colors.transparent,
-        iconTheme: const IconThemeData(color: Colors.black),
+        iconTheme: IconThemeData(color: Theme.of(context).primaryColor),
       ),
-      backgroundColor: const Color.fromRGBO(248, 248, 248, 1.0),
+      backgroundColor: Theme.of(context).backgroundColor,
       body: (jobProvider.newPostInit)
           ? SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
               child: Container(
                 padding: const EdgeInsets.symmetric(
                     vertical: 10.0, horizontal: 20.0),
-                color: const Color.fromRGBO(248, 248, 248, 1.0),
+                color: Theme.of(context).backgroundColor,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -205,8 +206,8 @@ class _NewJobPostState extends State<NewJobPost> {
                     Text(
                       "Post a new job",
                       style: GoogleFonts.dmSans(
-                        textStyle: FontThemeData.sectionTitleSecondary,
-                      ),
+                          textStyle: FontThemeData.sectionTitleSecondary,
+                          color: Theme.of(context).primaryColor),
                       textAlign: TextAlign.left,
                     ),
                     const SizedBox(height: 10.0),
@@ -222,7 +223,8 @@ class _NewJobPostState extends State<NewJobPost> {
                           Text(
                             "Job Title",
                             style: GoogleFonts.dmSans(
-                                textStyle: FontThemeData.inputLabel),
+                                textStyle: FontThemeData.inputLabel,
+                                color: Theme.of(context).primaryColor),
                           ),
                           const SizedBox(height: 2.0),
                           TextFormField(
@@ -264,7 +266,8 @@ class _NewJobPostState extends State<NewJobPost> {
                         Text(
                           "This position is remote",
                           style: GoogleFonts.dmSans(
-                              textStyle: FontThemeData.btnBlackText),
+                              textStyle: FontThemeData.btnBlackText,
+                              color: Theme.of(context).primaryColor),
                         ),
                       ],
                     ),
@@ -287,8 +290,9 @@ class _NewJobPostState extends State<NewJobPost> {
                                       Text(
                                         "City",
                                         style: GoogleFonts.dmSans(
-                                            textStyle:
-                                                FontThemeData.inputLabel),
+                                            textStyle: FontThemeData.inputLabel,
+                                            color:
+                                                Theme.of(context).primaryColor),
                                       ),
                                       const SizedBox(height: 2.0),
                                       TextFormField(
@@ -338,8 +342,9 @@ class _NewJobPostState extends State<NewJobPost> {
                                       Text(
                                         "Country",
                                         style: GoogleFonts.dmSans(
-                                            textStyle:
-                                                FontThemeData.inputLabel),
+                                            textStyle: FontThemeData.inputLabel,
+                                            color:
+                                                Theme.of(context).primaryColor),
                                       ),
                                       const SizedBox(height: 2.0),
                                       TextFormField(
@@ -391,7 +396,8 @@ class _NewJobPostState extends State<NewJobPost> {
                             Text(
                               "Industry",
                               style: GoogleFonts.dmSans(
-                                  textStyle: FontThemeData.inputLabel),
+                                  textStyle: FontThemeData.inputLabel,
+                                  color: Theme.of(context).primaryColor),
                             ),
                             const SizedBox(height: 2.0),
                             Container(
@@ -438,7 +444,8 @@ class _NewJobPostState extends State<NewJobPost> {
                         Text(
                           "No Pay Range",
                           style: GoogleFonts.dmSans(
-                              textStyle: FontThemeData.btnBlackText),
+                              textStyle: FontThemeData.btnBlackText,
+                              color: Theme.of(context).primaryColor),
                         ),
                       ],
                     ),
@@ -461,8 +468,9 @@ class _NewJobPostState extends State<NewJobPost> {
                                       Text(
                                         "Min. Salary Amount (Annual)",
                                         style: GoogleFonts.dmSans(
-                                            textStyle:
-                                                FontThemeData.inputLabel),
+                                            textStyle: FontThemeData.inputLabel,
+                                            color:
+                                                Theme.of(context).primaryColor),
                                       ),
                                       const SizedBox(height: 2.0),
                                       TextField(
@@ -515,8 +523,9 @@ class _NewJobPostState extends State<NewJobPost> {
                                       Text(
                                         "Max. Salary Amount (Annual)",
                                         style: GoogleFonts.dmSans(
-                                            textStyle:
-                                                FontThemeData.inputLabel),
+                                            textStyle: FontThemeData.inputLabel,
+                                            color:
+                                                Theme.of(context).primaryColor),
                                       ),
                                       const SizedBox(height: 2.0),
                                       TextField(
@@ -570,7 +579,8 @@ class _NewJobPostState extends State<NewJobPost> {
                             Text(
                               "Job Type",
                               style: GoogleFonts.dmSans(
-                                  textStyle: FontThemeData.inputLabel),
+                                  textStyle: FontThemeData.inputLabel,
+                                  color: Theme.of(context).primaryColor),
                             ),
                             const SizedBox(height: 2.0),
                             Container(
@@ -617,7 +627,8 @@ class _NewJobPostState extends State<NewJobPost> {
                             Text(
                               "Skills",
                               style: GoogleFonts.dmSans(
-                                  textStyle: FontThemeData.inputLabel),
+                                  textStyle: FontThemeData.inputLabel,
+                                  color: Theme.of(context).primaryColor),
                             ),
                             const SizedBox(height: 2.0),
                             SizedBox(
@@ -687,17 +698,24 @@ class _NewJobPostState extends State<NewJobPost> {
                                             },
                                           ),
                                         )
-                                      : const Padding(
-                                          padding: EdgeInsets.symmetric(
+                                      : Padding(
+                                          padding: const EdgeInsets.symmetric(
                                               vertical: 13.0),
-                                          child: Text("No Skills Added"),
+                                          child: Text(
+                                            "No Skills Added",
+                                            style: TextStyle(
+                                                color: Theme.of(context)
+                                                    .primaryColor),
+                                          ),
                                         ),
                                   Center(
                                     child: IconButton(
                                       onPressed: () {
                                         showAlertSkillList(context);
                                       },
-                                      icon: const Icon(Icons.add),
+                                      icon: Icon(Icons.add,
+                                          color:
+                                              Theme.of(context).primaryColor),
                                     ),
                                   ),
                                 ],
@@ -714,7 +732,8 @@ class _NewJobPostState extends State<NewJobPost> {
                         Text(
                           "Description",
                           style: GoogleFonts.dmSans(
-                              textStyle: FontThemeData.inputLabel),
+                              textStyle: FontThemeData.inputLabel,
+                              color: Theme.of(context).primaryColor),
                         ),
                         TextFormField(
                           initialValue: jobProvider.newPost.desc,
@@ -750,7 +769,8 @@ class _NewJobPostState extends State<NewJobPost> {
                             Text(
                               "Job Active Duration",
                               style: GoogleFonts.dmSans(
-                                  textStyle: FontThemeData.inputLabel),
+                                  textStyle: FontThemeData.inputLabel,
+                                  color: Theme.of(context).primaryColor),
                             ),
                             const SizedBox(height: 2.0),
                             Container(
@@ -799,6 +819,7 @@ class _NewJobPostState extends State<NewJobPost> {
               color: Colors.black.withOpacity(0.25),
             ),
           ),
+          color: Theme.of(context).backgroundColor,
         ),
         child: Padding(
           padding: const EdgeInsets.only(top: 10.0, right: 20.0, bottom: 10.0),

@@ -50,13 +50,16 @@ class _LayoutPageState extends State<LayoutPage> {
                 Container(
                   width: 1.0,
                   height: 20.0,
-                  decoration: const BoxDecoration(color: Colors.black),
+                  decoration:
+                      BoxDecoration(color: Theme.of(context).primaryColor),
                 ),
                 const SizedBox(width: 10.0),
                 Text(
                   "PARTNER",
                   style: GoogleFonts.dmSans(
-                      textStyle: FontThemeData.partnerHeading),
+                    textStyle: FontThemeData.partnerHeading,
+                    color: Theme.of(context).primaryColor,
+                  ),
                 ),
               ],
             ),
@@ -77,9 +80,9 @@ class _LayoutPageState extends State<LayoutPage> {
               },
               child: Row(
                 children: [
-                  const Icon(
+                  Icon(
                     Icons.logout,
-                    color: Colors.black,
+                    color: Theme.of(context).primaryColor,
                     size: 15.0,
                   ),
                   const SizedBox(width: 5.0),
@@ -87,7 +90,7 @@ class _LayoutPageState extends State<LayoutPage> {
                     'Logout',
                     style: GoogleFonts.dmSans(
                       fontSize: 12.0,
-                      color: Colors.black,
+                      color: Theme.of(context).primaryColor,
                     ),
                   ),
                 ],
@@ -97,14 +100,15 @@ class _LayoutPageState extends State<LayoutPage> {
         ),
         toolbarHeight: 80.0,
         elevation: 0,
-        backgroundColor: const Color.fromRGBO(248, 248, 248, 1.0),
+        backgroundColor: Theme.of(context).backgroundColor,
         shadowColor: Colors.transparent,
         iconTheme: const IconThemeData(color: Colors.black),
       ),
       body: _screens[_currentIndex],
       bottomSheet: (_currentIndex == 0)
-          ? SizedBox(
+          ? Container(
               width: width,
+              color: Theme.of(context).backgroundColor,
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 10.0, right: 15.0),
                 child: Row(
@@ -141,10 +145,11 @@ class _LayoutPageState extends State<LayoutPage> {
             )
           : const SizedBox(width: 0.0, height: 0.0),
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Theme.of(context).backgroundColor,
         type: BottomNavigationBarType.fixed,
         currentIndex: _currentIndex,
         onTap: _changeIndex,
-        selectedItemColor: Colors.black,
+        selectedItemColor: Theme.of(context).primaryColor,
         selectedFontSize: 13,
         unselectedItemColor: Colors.grey.shade500,
         unselectedFontSize: 10,

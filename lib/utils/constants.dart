@@ -1,7 +1,7 @@
 // ignore_for_file: constant_identifier_names
 
 class AppConstants {
-  static const String API_URL = "http://codajobs-admin.beamcoda.com";
+  static const String API_URL = "http://192.168.8.173.nip.io:8000";
   static const String STATIC_WEB_URL = "https://codajobs.beamcoda.com";
   static const String CURRENCY_PREFIX = "\$";
 

@@ -1,9 +1,10 @@
+import 'package:beamcoda_jobs_partners_flutter/logic/cubit/theme_cubit.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
 import './data/auth.dart';
@@ -43,59 +44,65 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
+    return MultiBlocProvider(
       providers: [
-        ChangeNotifierProvider<JobProvider>(create: (context) => JobProvider()),
-        ChangeNotifierProvider<SubscriptionProvider>(
-            create: (context) => SubscriptionProvider()),
+        BlocProvider(create: (context) => SwitchCubit()),
       ],
-      child: MaterialApp(
-        title: 'BeemCoda Jobs Partner',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-          textTheme: GoogleFonts.dmSansTextTheme(),
-        ),
-        home: Consumer<AuthProvider>(builder: (context, auth, child) {
-          return FutureBuilder(
-            future: auth.checkLogin(context),
-            builder: (context, future) {
-              final isAuth = future.data;
-              switch (isAuth) {
-                case false:
-                  return const LoginPage();
-                default:
-                  return FutureBuilder(
-                    future: auth.getUserDetails(context),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData &&
-                          snapshot.connectionState == ConnectionState.done) {
-                        WidgetsBinding.instance.addPostFrameCallback((_) {
-                          Navigator.of(context).pop();
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  LayoutPage(key: UniqueKey()),
+      child: BlocBuilder<SwitchCubit, SwitchState>(
+        builder: (context, state) => MultiProvider(
+          providers: [
+            ChangeNotifierProvider<JobProvider>(
+                create: (context) => JobProvider()),
+            ChangeNotifierProvider<SubscriptionProvider>(
+                create: (context) => SubscriptionProvider()),
+          ],
+          child: MaterialApp(
+            title: 'BeemCoda Jobs Partner',
+            theme: state.theme,
+            home: Consumer<AuthProvider>(builder: (context, auth, child) {
+              return FutureBuilder(
+                future: auth.checkLogin(context),
+                builder: (context, future) {
+                  final isAuth = future.data;
+                  switch (isAuth) {
+                    case false:
+                      return const LoginPage();
+                    default:
+                      return FutureBuilder(
+                        future: auth.getUserDetails(context),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData &&
+                              snapshot.connectionState ==
+                                  ConnectionState.done) {
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              Navigator.of(context).pop();
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      LayoutPage(key: UniqueKey()),
+                                ),
+                              );
+                            });
+                            // return LayoutPage(key: GlobalKey());
+                          }
+                          return Container(
+                            width: MediaQuery.of(context).size.width,
+                            height: MediaQuery.of(context).size.height,
+                            color: Colors.white,
+                            child: Center(
+                              child: CircularProgressIndicator(
+                                color: Colors.teal.shade400,
+                              ),
                             ),
                           );
-                        });
-                        // return LayoutPage(key: GlobalKey());
-                      }
-                      return Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height,
-                        color: Colors.white,
-                        child: Center(
-                          child: CircularProgressIndicator(
-                            color: Colors.teal.shade400,
-                          ),
-                        ),
+                        },
                       );
-                    },
-                  );
-              }
-            },
-          );
-        }),
+                  }
+                },
+              );
+            }),
+          ),
+        ),
       ),
     );
   }

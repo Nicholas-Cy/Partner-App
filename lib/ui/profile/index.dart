@@ -136,7 +136,7 @@ class _ProfilePageState extends State<ProfilePage> {
       physics: const BouncingScrollPhysics(),
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-        color: const Color.fromRGBO(248, 248, 248, 1.0),
+        color: Theme.of(context).backgroundColor,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -183,7 +183,8 @@ class _ProfilePageState extends State<ProfilePage> {
                         child: Text("Company Logo Picture",
                             style: GoogleFonts.dmSans(
                                 textStyle:
-                                    FontThemeData.profilePagePrimaryTitle)),
+                                    FontThemeData.profilePagePrimaryTitle,
+                                color: Theme.of(context).primaryColor)),
                       ),
                       const SizedBox(height: 5.0),
                       SizedBox(
@@ -191,7 +192,8 @@ class _ProfilePageState extends State<ProfilePage> {
                         child: Text(
                             "Tap the picture to upload a new image here.",
                             style: GoogleFonts.dmSans(
-                                textStyle: FontThemeData.profilePageHintTxt)),
+                                textStyle: FontThemeData.profilePageHintTxt,
+                                color: Theme.of(context).primaryColor)),
                       ),
                     ],
                   ),
@@ -205,7 +207,8 @@ class _ProfilePageState extends State<ProfilePage> {
                 Text(
                   "Personal",
                   style: GoogleFonts.dmSans(
-                      textStyle: FontThemeData.profilePageSecondaryTitle),
+                      textStyle: FontThemeData.profilePageSecondaryTitle,
+                      color: Theme.of(context).primaryColor),
                 ),
                 const SizedBox(height: 10.0),
                 // Company Name (Legal)
@@ -220,7 +223,8 @@ class _ProfilePageState extends State<ProfilePage> {
                       Text(
                         "Company Name (Legal)",
                         style: GoogleFonts.dmSans(
-                            textStyle: FontThemeData.inputLabel),
+                            textStyle: FontThemeData.inputLabel,
+                            color: Theme.of(context).primaryColor),
                       ),
                       TextFormField(
                         style: const TextStyle(
@@ -257,7 +261,8 @@ class _ProfilePageState extends State<ProfilePage> {
                       Text(
                         "Display name",
                         style: GoogleFonts.dmSans(
-                            textStyle: FontThemeData.inputLabel),
+                            textStyle: FontThemeData.inputLabel,
+                            color: Theme.of(context).primaryColor),
                       ),
                       TextFormField(
                         style: const TextStyle(
@@ -290,7 +295,8 @@ class _ProfilePageState extends State<ProfilePage> {
                     Text(
                       "Bio",
                       style: GoogleFonts.dmSans(
-                          textStyle: FontThemeData.inputLabel),
+                          textStyle: FontThemeData.inputLabel,
+                          color: Theme.of(context).primaryColor),
                     ),
                     TextFormField(
                       initialValue: authProvider.partner.bio,
@@ -326,7 +332,8 @@ class _ProfilePageState extends State<ProfilePage> {
                         Text(
                           "Company Employee Size",
                           style: GoogleFonts.dmSans(
-                              textStyle: FontThemeData.inputLabel),
+                              textStyle: FontThemeData.inputLabel,
+                              color: Theme.of(context).primaryColor),
                         ),
                         const SizedBox(height: 2.0),
                         Container(

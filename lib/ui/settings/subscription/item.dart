@@ -1,3 +1,4 @@
+import 'package:beamcoda_jobs_partners_flutter/logic/cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -61,6 +62,9 @@ class PackageItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final userProvider = Provider.of<AuthProvider>(context);
     double width = MediaQuery.of(context).size.width;
+    final themeCubit = context.read<SwitchCubit>();
+    final isDarkThemeOn = themeCubit.state.isDarkThemeOn;
+
     return GestureDetector(
       onTap: () {
         if (userProvider.partner.packageId != package.id) {
@@ -85,6 +89,7 @@ class PackageItem extends StatelessWidget {
             borderRadius: const BorderRadius.all(
               Radius.circular(10.0),
             ),
+            color: (isDarkThemeOn) ? Theme.of(context).primaryColor : null,
           ),
           child: Stack(
             clipBehavior: Clip.none,

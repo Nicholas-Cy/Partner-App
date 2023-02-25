@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import './appearance/index.dart';
 import './help-support/index.dart';
-// import './appearance/index.dart';
 import './notifications/index.dart';
 import './privacy-security/index.dart';
+import '../../../logic/cubit/theme_cubit.dart';
 import '../../utils/constants.dart';
 import '../settings/subscription/index.dart';
 import '../theme_data/fonts.dart';
@@ -25,12 +27,16 @@ class SettingsPage extends StatelessWidget {
     final aboutUrl = Uri.parse("${AppConstants.STATIC_WEB_URL}/about-us");
     final otherAppsUrl = Uri.parse("https://beamcoda.com/apps");
     final rateAppUrl = Uri.parse("https://codecanyon.net/downloads");
+    final themeCubit = context.read<SwitchCubit>();
+    final isDarkThemeOn = themeCubit.state.isDarkThemeOn;
+
     return Scaffold(
+      backgroundColor: Theme.of(context).backgroundColor,
       body: SingleChildScrollView(
         physics: const NeverScrollableScrollPhysics(),
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 20.0),
-          color: const Color.fromRGBO(248, 248, 248, 1.0),
+          color: Theme.of(context).backgroundColor,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.max,
@@ -38,8 +44,10 @@ class SettingsPage extends StatelessWidget {
               const SizedBox(height: 15.0),
               Text(
                 "Settings",
-                style:
-                    GoogleFonts.dmSans(textStyle: FontThemeData.sectionTitles),
+                style: GoogleFonts.dmSans(
+                  textStyle: FontThemeData.sectionTitles,
+                  color: Theme.of(context).primaryColor,
+                ),
               ),
               const SizedBox(height: 15.0),
               // Subscription
@@ -59,17 +67,22 @@ class SettingsPage extends StatelessWidget {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          const Icon(Icons.attach_money_outlined, size: 30.0),
+                          Icon(Icons.attach_money_outlined,
+                              size: 30.0,
+                              color: Theme.of(context).primaryColor),
                           const SizedBox(width: 10.0),
                           Text(
                             "Subscription",
                             style: GoogleFonts.dmSans(
-                                textStyle:
-                                    FontThemeData.settingsListItemSecondary),
+                              textStyle:
+                                  FontThemeData.settingsListItemSecondary,
+                              color: Theme.of(context).primaryColor,
+                            ),
                           ),
                         ],
                       ),
-                      const Icon(Icons.chevron_right, color: Colors.black),
+                      Icon(Icons.chevron_right,
+                          color: Theme.of(context).primaryColor),
                     ],
                   ),
                 ),
@@ -91,53 +104,66 @@ class SettingsPage extends StatelessWidget {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          const Icon(Icons.alarm_add_outlined, size: 30.0),
+                          Icon(Icons.alarm_add_outlined,
+                              size: 30.0,
+                              color: Theme.of(context).primaryColor),
                           const SizedBox(width: 10.0),
                           Text(
                             "Notifications",
                             style: GoogleFonts.dmSans(
-                                textStyle:
-                                    FontThemeData.settingsListItemSecondary),
+                              textStyle:
+                                  FontThemeData.settingsListItemSecondary,
+                              color: Theme.of(context).primaryColor,
+                            ),
                           ),
                         ],
                       ),
-                      const Icon(Icons.chevron_right, color: Colors.black),
+                      Icon(Icons.chevron_right,
+                          color: Theme.of(context).primaryColor),
                     ],
                   ),
                 ),
               ),
               // Appearance
-              // InkWell(
-              //   onTap: () {
-              //     Navigator.of(context).push(
-              //       MaterialPageRoute(
-              //         builder: (BuildContext context) => const AppearancePage(),
-              //       ),
-              //     );
-              //   },
-              //   child: Padding(
-              //     padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
-              //     child: Row(
-              //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //       children: [
-              //         Row(
-              //           crossAxisAlignment: CrossAxisAlignment.center,
-              //           children: [
-              //             const Icon(Icons.remove_red_eye, size: 30.0),
-              //             const SizedBox(width: 10.0),
-              //             Text(
-              //               "Appearance",
-              //               style: GoogleFonts.dmSans(
-              //                   textStyle:
-              //                       FontThemeData.settingsListItemSecondary),
-              //             ),
-              //           ],
-              //         ),
-              //         const Icon(Icons.chevron_right, color: Colors.black),
-              //       ],
-              //     ),
-              //   ),
-              // ),
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const AppearancePage(),
+                    ),
+                  );
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Icon(Icons.remove_red_eye,
+                              size: 30.0,
+                              color: Theme.of(context).primaryColor),
+                          const SizedBox(width: 10.0),
+                          Text(
+                            "Appearance",
+                            style: GoogleFonts.dmSans(
+                              textStyle:
+                                  FontThemeData.settingsListItemSecondary,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Icon(
+                        Icons.chevron_right,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
               // Privacy & Security
               InkWell(
                 onTap: () {
@@ -155,17 +181,21 @@ class SettingsPage extends StatelessWidget {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          const Icon(Icons.lock, size: 30.0),
+                          Icon(Icons.lock,
+                              size: 30.0,
+                              color: Theme.of(context).primaryColor),
                           const SizedBox(width: 10.0),
                           Text(
                             "Privacy & Security",
                             style: GoogleFonts.dmSans(
                                 textStyle:
-                                    FontThemeData.settingsListItemSecondary),
+                                    FontThemeData.settingsListItemSecondary,
+                                color: Theme.of(context).primaryColor),
                           ),
                         ],
                       ),
-                      const Icon(Icons.chevron_right, color: Colors.black),
+                      Icon(Icons.chevron_right,
+                          color: Theme.of(context).primaryColor),
                     ],
                   ),
                 ),
@@ -187,17 +217,21 @@ class SettingsPage extends StatelessWidget {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          const Icon(Icons.contact_mail, size: 30.0),
+                          Icon(Icons.contact_mail,
+                              size: 30.0,
+                              color: Theme.of(context).primaryColor),
                           const SizedBox(width: 10.0),
                           Text(
                             "Help & Support",
                             style: GoogleFonts.dmSans(
                                 textStyle:
-                                    FontThemeData.settingsListItemSecondary),
+                                    FontThemeData.settingsListItemSecondary,
+                                color: Theme.of(context).primaryColor),
                           ),
                         ],
                       ),
-                      const Icon(Icons.chevron_right, color: Colors.black),
+                      Icon(Icons.chevron_right,
+                          color: Theme.of(context).primaryColor),
                     ],
                   ),
                 ),
@@ -215,17 +249,21 @@ class SettingsPage extends StatelessWidget {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          const Icon(Icons.question_mark_rounded, size: 30.0),
+                          Icon(Icons.question_mark_rounded,
+                              size: 30.0,
+                              color: Theme.of(context).primaryColor),
                           const SizedBox(width: 10.0),
                           Text(
                             "About",
                             style: GoogleFonts.dmSans(
                                 textStyle:
-                                    FontThemeData.settingsListItemSecondary),
+                                    FontThemeData.settingsListItemSecondary,
+                                color: Theme.of(context).primaryColor),
                           ),
                         ],
                       ),
-                      const Icon(Icons.chevron_right, color: Colors.black),
+                      Icon(Icons.chevron_right,
+                          color: Theme.of(context).primaryColor),
                     ],
                   ),
                 ),
@@ -271,8 +309,8 @@ class SettingsPage extends StatelessWidget {
       bottomSheet: Container(
         width: width,
         height: 100.0,
-        decoration: const BoxDecoration(
-          color: Colors.transparent,
+        decoration: BoxDecoration(
+          color: Theme.of(context).backgroundColor,
         ),
         child: Padding(
           padding: const EdgeInsets.only(top: 10.0, right: 20.0, bottom: 10.0),
@@ -309,7 +347,9 @@ class SettingsPage extends StatelessWidget {
               "COPYRIGHT © CODAJOBS 2022 - PRESENT",
               style: GoogleFonts.dmSans(
                 textStyle: FontThemeData.btnText,
-                color: Colors.grey.shade600,
+                color: (isDarkThemeOn)
+                    ? Theme.of(context).primaryColor
+                    : Colors.grey.shade600,
               ),
             )
           ]),

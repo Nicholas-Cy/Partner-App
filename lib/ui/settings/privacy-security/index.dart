@@ -132,27 +132,29 @@ class _PrivacySecurityPageState extends State<PrivacySecurityPage> {
             Container(
               width: 1.0,
               height: 20.0,
-              decoration: const BoxDecoration(color: Colors.black),
+              decoration: BoxDecoration(color: Theme.of(context).primaryColor),
             ),
             const SizedBox(width: 10.0),
             Text(
               "PARTNER",
-              style:
-                  GoogleFonts.dmSans(textStyle: FontThemeData.partnerHeading),
+              style: GoogleFonts.dmSans(
+                textStyle: FontThemeData.partnerHeading,
+                color: Theme.of(context).primaryColor,
+              ),
             ),
           ],
         ),
         toolbarHeight: 80.0,
         elevation: 0,
-        backgroundColor: const Color.fromRGBO(248, 248, 248, 1.0),
+        backgroundColor: Theme.of(context).backgroundColor,
         shadowColor: Colors.transparent,
-        iconTheme: const IconThemeData(color: Colors.black),
+        iconTheme: IconThemeData(color: Theme.of(context).primaryColor),
       ),
       body: SingleChildScrollView(
         physics: const NeverScrollableScrollPhysics(),
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 20.0),
-          color: const Color.fromRGBO(248, 248, 248, 1.0),
+          color: Theme.of(context).backgroundColor,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.max,
@@ -163,7 +165,9 @@ class _PrivacySecurityPageState extends State<PrivacySecurityPage> {
                 child: Text(
                   "Privacy & Security",
                   style: GoogleFonts.dmSans(
-                      textStyle: FontThemeData.sectionTitles),
+                    textStyle: FontThemeData.sectionTitles,
+                    color: Theme.of(context).primaryColor,
+                  ),
                 ),
               ),
               const SizedBox(height: 30.0),
@@ -177,7 +181,9 @@ class _PrivacySecurityPageState extends State<PrivacySecurityPage> {
                   child: Text(
                     "Our Privacy Policy",
                     style: GoogleFonts.dmSans(
-                        textStyle: FontThemeData.settingsListItemPrimary),
+                      textStyle: FontThemeData.settingsListItemPrimary,
+                      color: Theme.of(context).primaryColor,
+                    ),
                   ),
                 ),
               ),
@@ -192,7 +198,9 @@ class _PrivacySecurityPageState extends State<PrivacySecurityPage> {
                   child: Text(
                     "Terms of Services",
                     style: GoogleFonts.dmSans(
-                        textStyle: FontThemeData.settingsListItemPrimary),
+                      textStyle: FontThemeData.settingsListItemPrimary,
+                      color: Theme.of(context).primaryColor,
+                    ),
                   ),
                 ),
               ),

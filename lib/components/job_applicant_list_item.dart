@@ -182,13 +182,17 @@ class _JobApplicantListItemState extends State<JobApplicantListItem> {
                     Text(
                       widget.applicant.name,
                       style: GoogleFonts.dmSans(
-                          textStyle: FontThemeData.profileName),
+                        textStyle: FontThemeData.profileName,
+                        color: Theme.of(context).primaryColor,
+                      ),
                     ),
                     const SizedBox(height: 2.0),
                     Text(
                       widget.applicant.profession,
                       style: GoogleFonts.dmSans(
-                          textStyle: FontThemeData.profileOccupation),
+                        textStyle: FontThemeData.profileOccupation,
+                        color: Theme.of(context).primaryColor,
+                      ),
                     ),
                   ],
                 ),
@@ -218,9 +222,9 @@ class _JobApplicantListItemState extends State<JobApplicantListItem> {
                         }
                       }
                     },
-                    icon: const Icon(
+                    icon: Icon(
                       Icons.file_download_outlined,
-                      color: Colors.black,
+                      color: Theme.of(context).primaryColor,
                     ),
                   )
                 : IconButton(
@@ -228,9 +232,9 @@ class _JobApplicantListItemState extends State<JobApplicantListItem> {
                     onPressed: () {
                       showAlertApplicantShortlist(context);
                     },
-                    icon: const Icon(
+                    icon: Icon(
                       Icons.list_alt_outlined,
-                      color: Colors.black,
+                      color: Theme.of(context).primaryColor,
                     ),
                   ),
           ],

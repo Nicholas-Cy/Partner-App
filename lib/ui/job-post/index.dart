@@ -203,28 +203,30 @@ class _ViewJobPostState extends State<ViewJobPost>
             Container(
               width: 1.0,
               height: 20.0,
-              decoration: const BoxDecoration(color: Colors.black),
+              decoration: BoxDecoration(color: Theme.of(context).primaryColor),
             ),
             const SizedBox(width: 10.0),
             Text(
               "PARTNER",
-              style:
-                  GoogleFonts.dmSans(textStyle: FontThemeData.partnerHeading),
+              style: GoogleFonts.dmSans(
+                textStyle: FontThemeData.partnerHeading,
+                color: Theme.of(context).primaryColor,
+              ),
             ),
           ],
         ),
         toolbarHeight: 80.0,
         elevation: 0,
-        backgroundColor: const Color.fromRGBO(248, 248, 248, 1.0),
+        backgroundColor: Theme.of(context).backgroundColor,
         shadowColor: Colors.transparent,
-        iconTheme: const IconThemeData(color: Colors.black),
+        iconTheme: IconThemeData(color: Theme.of(context).primaryColor),
       ),
-      backgroundColor: const Color.fromRGBO(248, 248, 248, 1.0),
+      backgroundColor: Theme.of(context).backgroundColor,
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-          color: const Color.fromRGBO(248, 248, 248, 1.0),
+          color: Theme.of(context).backgroundColor,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -236,13 +238,19 @@ class _ViewJobPostState extends State<ViewJobPost>
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Text(jobPost.title,
-                            style: GoogleFonts.dmSans(
-                                textStyle: FontThemeData.jobPostName)),
+                        Text(
+                          jobPost.title,
+                          style: GoogleFonts.dmSans(
+                            textStyle: FontThemeData.jobPostName,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                        ),
                         const SizedBox(height: 5.0),
                         Text(jobPost.jobLocation,
                             style: GoogleFonts.raleway(
-                                textStyle: FontThemeData.jobPostSecondHeading)),
+                              textStyle: FontThemeData.jobPostSecondHeading,
+                              color: Theme.of(context).primaryColor,
+                            )),
                       ],
                     ),
                     Column(
@@ -250,7 +258,9 @@ class _ViewJobPostState extends State<ViewJobPost>
                       children: <Widget>[
                         Text("Application Deadline",
                             style: GoogleFonts.raleway(
-                                textStyle: FontThemeData.jobPostThirdHeading)),
+                              textStyle: FontThemeData.jobPostThirdHeading,
+                              color: Theme.of(context).primaryColor,
+                            )),
                         const SizedBox(height: 5.0),
                         (jobPost.deadlineDate.isNotEmpty)
                             ? Text(
@@ -259,8 +269,9 @@ class _ViewJobPostState extends State<ViewJobPost>
                                       .parse(jobPost.deadlineDate),
                                 ),
                                 style: GoogleFonts.dmSans(
-                                    textStyle:
-                                        FontThemeData.jobPostDeadlineDate))
+                                  textStyle: FontThemeData.jobPostDeadlineDate,
+                                  color: Theme.of(context).primaryColor,
+                                ))
                             : const SizedBox()
                       ],
                     ),
@@ -275,10 +286,13 @@ class _ViewJobPostState extends State<ViewJobPost>
                   children: [
                     Column(
                       children: <Widget>[
-                        Text("INDUSTRY",
-                            style: GoogleFonts.dmSans(
-                                textStyle:
-                                    FontThemeData.jobPostAttributesTitle)),
+                        Text(
+                          "INDUSTRY",
+                          style: GoogleFonts.dmSans(
+                            textStyle: FontThemeData.jobPostAttributesTitle,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                        ),
                         const SizedBox(height: 5.0),
                         Image(
                           width: attributeContainer,
@@ -291,7 +305,9 @@ class _ViewJobPostState extends State<ViewJobPost>
                           child: Text(
                             jobPost.jobCategory,
                             style: GoogleFonts.dmSans(
-                                textStyle: FontThemeData.jobPostAttributesText),
+                              textStyle: FontThemeData.jobPostAttributesText,
+                              color: Theme.of(context).primaryColor,
+                            ),
                             textAlign: TextAlign.center,
                           ),
                         ),
@@ -301,10 +317,14 @@ class _ViewJobPostState extends State<ViewJobPost>
                         ? const SizedBox()
                         : Column(
                             children: <Widget>[
-                              Text("LOCATION",
-                                  style: GoogleFonts.dmSans(
-                                      textStyle: FontThemeData
-                                          .jobPostAttributesTitle)),
+                              Text(
+                                "LOCATION",
+                                style: GoogleFonts.dmSans(
+                                  textStyle:
+                                      FontThemeData.jobPostAttributesTitle,
+                                  color: Theme.of(context).primaryColor,
+                                ),
+                              ),
                               const SizedBox(height: 5.0),
                               Image(
                                 width: attributeContainer,
@@ -313,18 +333,25 @@ class _ViewJobPostState extends State<ViewJobPost>
                                     "assets/icons/location.png"),
                               ),
                               const SizedBox(height: 10.0),
-                              Text(jobPost.jobLocation,
-                                  style: GoogleFonts.dmSans(
-                                      textStyle:
-                                          FontThemeData.jobPostAttributesText)),
+                              Text(
+                                jobPost.jobLocation,
+                                style: GoogleFonts.dmSans(
+                                  textStyle:
+                                      FontThemeData.jobPostAttributesText,
+                                  color: Theme.of(context).primaryColor,
+                                ),
+                              ),
                             ],
                           ),
                     Column(
                       children: <Widget>[
-                        Text("JOB TYPE",
-                            style: GoogleFonts.dmSans(
-                                textStyle:
-                                    FontThemeData.jobPostAttributesTitle)),
+                        Text(
+                          "JOB TYPE",
+                          style: GoogleFonts.dmSans(
+                            textStyle: FontThemeData.jobPostAttributesTitle,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                        ),
                         const SizedBox(height: 5.0),
                         Image(
                           width: attributeContainer,
@@ -332,10 +359,13 @@ class _ViewJobPostState extends State<ViewJobPost>
                           image: const AssetImage("assets/icons/job-type.png"),
                         ),
                         const SizedBox(height: 10.0),
-                        Text(jobPost.jobType,
-                            style: GoogleFonts.dmSans(
-                                textStyle:
-                                    FontThemeData.jobPostAttributesText)),
+                        Text(
+                          jobPost.jobType,
+                          style: GoogleFonts.dmSans(
+                            textStyle: FontThemeData.jobPostAttributesText,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                        ),
                       ],
                     ),
                   ],
@@ -348,7 +378,9 @@ class _ViewJobPostState extends State<ViewJobPost>
                       child: Text(
                         "Skills",
                         style: GoogleFonts.raleway(
-                            textStyle: FontThemeData.jobPostSecondHeadingBold),
+                          textStyle: FontThemeData.jobPostSecondHeadingBold,
+                          color: Theme.of(context).primaryColor,
+                        ),
                         textAlign: TextAlign.start,
                       ),
                     )
@@ -391,7 +423,10 @@ class _ViewJobPostState extends State<ViewJobPost>
               const SizedBox(height: 10.0),
               Text(
                 jobPost.desc,
-                style: GoogleFonts.dmSans(textStyle: FontThemeData.jobPostText),
+                style: GoogleFonts.dmSans(
+                  textStyle: FontThemeData.jobPostText,
+                  color: Theme.of(context).primaryColor,
+                ),
                 textAlign: TextAlign.justify,
               ),
               const SizedBox(height: 10.0),
@@ -400,16 +435,21 @@ class _ViewJobPostState extends State<ViewJobPost>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const SizedBox(height: 10.0),
-                        Text("Salary Range",
-                            style: GoogleFonts.raleway(
-                                textStyle:
-                                    FontThemeData.jobPostSalaryRangeTitle)),
+                        Text(
+                          "Salary Range",
+                          style: GoogleFonts.raleway(
+                            textStyle: FontThemeData.jobPostSalaryRangeTitle,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                        ),
                         const SizedBox(height: 2.0),
                         Text(
-                            "${AppConstants.CURRENCY_PREFIX}${jobPost.minPayRange} - ${AppConstants.CURRENCY_PREFIX}${jobPost.maxPayRange} / Annual",
-                            style: GoogleFonts.dmSans(
-                                textStyle:
-                                    FontThemeData.jobPostSalaryRangeText))
+                          "${AppConstants.CURRENCY_PREFIX}${jobPost.minPayRange} - ${AppConstants.CURRENCY_PREFIX}${jobPost.maxPayRange} / Annual",
+                          style: GoogleFonts.dmSans(
+                            textStyle: FontThemeData.jobPostSalaryRangeText,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                        ),
                       ],
                     )
                   : const SizedBox(),
@@ -418,8 +458,10 @@ class _ViewJobPostState extends State<ViewJobPost>
                 padding: const EdgeInsets.symmetric(vertical: 10.0),
                 child: Text(
                   "Applications",
-                  style:
-                      GoogleFonts.dmSans(textStyle: FontThemeData.btnBlackText),
+                  style: GoogleFonts.dmSans(
+                    textStyle: FontThemeData.btnBlackText,
+                    color: Theme.of(context).primaryColor,
+                  ),
                 ),
               ),
               Column(
@@ -442,7 +484,9 @@ class _ViewJobPostState extends State<ViewJobPost>
                           )
                         : Text(
                             "No Applicants",
-                            style: GoogleFonts.dmSans(),
+                            style: GoogleFonts.dmSans(
+                              color: Theme.of(context).primaryColor,
+                            ),
                           ),
                   ),
                 ],
@@ -461,6 +505,7 @@ class _ViewJobPostState extends State<ViewJobPost>
               color: Colors.black.withOpacity(0.25),
             ),
           ),
+          color: Theme.of(context).backgroundColor,
         ),
         child: Padding(
           padding: const EdgeInsets.only(top: 10.0, right: 20.0, bottom: 10.0),
@@ -472,20 +517,20 @@ class _ViewJobPostState extends State<ViewJobPost>
                       onPressed: () {
                         toggleStatus(context, 'paused');
                       },
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.pause,
                         size: 20.0,
-                        color: Colors.black,
+                        color: Theme.of(context).primaryColor,
                       ),
                     )
                   : IconButton(
                       onPressed: () {
                         toggleStatus(context, 'active');
                       },
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.play_arrow,
                         size: 20.0,
-                        color: Colors.black,
+                        color: Theme.of(context).primaryColor,
                       ),
                     ),
               ElevatedButton(

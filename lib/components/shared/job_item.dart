@@ -1,4 +1,6 @@
+import 'package:beamcoda_jobs_partners_flutter/logic/cubit/theme_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
@@ -13,6 +15,8 @@ class JobPost extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
+    final themeCubit = context.read<SwitchCubit>();
+    final isDarkThemeOn = themeCubit.state.isDarkThemeOn;
     return GestureDetector(
       onTap: () {
         Navigator.of(context).push(
@@ -35,6 +39,7 @@ class JobPost extends StatelessWidget {
           borderRadius: const BorderRadius.all(
             Radius.circular(10.0),
           ),
+          color: (isDarkThemeOn) ? Theme.of(context).primaryColor : null,
         ),
         child: Stack(
           clipBehavior: Clip.none,
