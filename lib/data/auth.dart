@@ -168,7 +168,7 @@ class AuthProvider extends ChangeNotifier {
     }
 
     if (response.statusCode != 200) {
-      return json.decode(response.body)['message'];
+      return json.decode(response.body)['message']['msg'];
     }
 
     return '';

@@ -24,8 +24,11 @@ class _LoginPageState extends State<LoginPage> {
   late String _password;
   String errorMessage = '';
 
-  Future<void> _login() async {
+  Future<void> _googleLogin() async {
     final userProvider = Provider.of<AuthProvider>(context, listen: false);
+    setState(() {
+      errorMessage = '';
+    });
     // Trigger the authentication flow
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
@@ -36,16 +39,22 @@ class _LoginPageState extends State<LoginPage> {
     late String? accessToken = googleAuth?.accessToken;
 
     // Authenticate with Admin Panel
-    await userProvider.googleLogin(accessToken!).then(
-          (value) => Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) {
-                return LayoutPage(key: GlobalKey());
-              },
-            ),
+    await userProvider.googleLogin(accessToken!).then((value) {
+      if (value != '') {
+        setState(() {
+          errorMessage = value;
+        });
+      } else {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              return LayoutPage(key: GlobalKey());
+            },
           ),
         );
+      }
+    });
   }
 
   Future<void> submitForm(BuildContext context) async {
@@ -254,7 +263,7 @@ class _LoginPageState extends State<LoginPage> {
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(40)),
                           ),
-                          onPressed: () => _login(),
+                          onPressed: () => _googleLogin(),
                           child: Center(
                             child: Row(
                               children: [
