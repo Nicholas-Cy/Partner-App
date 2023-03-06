@@ -5,6 +5,9 @@ class AppConstants {
   static const String STATIC_WEB_URL = "https://codajobs.beamcoda.com";
   static const String CURRENCY_PREFIX = "\$";
 
+  // Social Login
+  static const String GOOGLE_LOGIN_URL = "/api/partner/auth/google";
+
   // Upload urls
   static const String UPLOAD_IMG_URL = "/api/file/upload-image";
   static const String UPLOAD_IMG_DIRECTORY = "/img/uploads";

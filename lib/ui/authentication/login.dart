@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -22,6 +23,30 @@ class _LoginPageState extends State<LoginPage> {
   late String _email;
   late String _password;
   String errorMessage = '';
+
+  Future<void> _login() async {
+    final userProvider = Provider.of<AuthProvider>(context, listen: false);
+    // Trigger the authentication flow
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+    // Obtain the auth details from the request
+    final GoogleSignInAuthentication? googleAuth =
+        await googleUser?.authentication;
+
+    late String? accessToken = googleAuth?.accessToken;
+
+    // Authenticate with Admin Panel
+    await userProvider.googleLogin(accessToken!).then(
+          (value) => Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) {
+                return LayoutPage(key: GlobalKey());
+              },
+            ),
+          ),
+        );
+  }
 
   Future<void> submitForm(BuildContext context) async {
     setState(() {
@@ -213,7 +238,47 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 100.0),
+                      const SizedBox(height: 40.0),
+                      SizedBox(
+                        width: 210.0,
+                        height: 50.0,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            foregroundColor: Colors.transparent,
+                            backgroundColor: Colors.white,
+                            elevation: 1.0,
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 5.0,
+                              horizontal: 10.0,
+                            ),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(40)),
+                          ),
+                          onPressed: () => _login(),
+                          child: Center(
+                            child: Row(
+                              children: [
+                                const Image(
+                                  image: AssetImage(
+                                      "assets/images/google_logo.png"),
+                                  height: 35.0,
+                                ),
+                                const SizedBox(width: 5.0),
+                                Text(
+                                  "Login With Google",
+                                  softWrap: true,
+                                  style: GoogleFonts.dmSans(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.normal,
+                                    fontSize: 16.0,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 60.0),
                       ElevatedButton(
                         onPressed: () {
                           Navigator.push(

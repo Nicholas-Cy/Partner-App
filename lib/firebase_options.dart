@@ -67,6 +67,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '839679147133',
     projectId: 'codajobs-demo',
     storageBucket: 'codajobs-demo.appspot.com',
+    androidClientId: '839679147133-14i7nde730o82qsdbv3bt9l63ag870n5.apps.googleusercontent.com',
     iosClientId: '839679147133-a2k4gjpuoi0akgml3q6hqqpdpiqdb3h5.apps.googleusercontent.com',
     iosBundleId: 'com.example.beamcodaJobsPartnersFlutter',
   );
@@ -77,6 +78,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '839679147133',
     projectId: 'codajobs-demo',
     storageBucket: 'codajobs-demo.appspot.com',
+    androidClientId: '839679147133-14i7nde730o82qsdbv3bt9l63ag870n5.apps.googleusercontent.com',
     iosClientId: '839679147133-a2k4gjpuoi0akgml3q6hqqpdpiqdb3h5.apps.googleusercontent.com',
     iosBundleId: 'com.example.beamcodaJobsPartnersFlutter',
   );
