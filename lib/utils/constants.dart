@@ -1,8 +1,8 @@
 // ignore_for_file: constant_identifier_names
 
 class AppConstants {
-  static const String API_URL = "https://bcfc-192-228-195-244.ngrok-free.app";
-  static const String STATIC_WEB_URL = "https://codajobs.test";
+  static const String API_URL = "http://10.0.2.2:8000";
+  static const String STATIC_WEB_URL = "http://10.0.2.2:9000";
   static const String CURRENCY_PREFIX = "\$";
 
   // Social Login
