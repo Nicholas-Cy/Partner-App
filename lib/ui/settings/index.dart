@@ -344,7 +344,7 @@ class SettingsPage extends StatelessWidget {
             ),
             const SizedBox(height: 15.0),
             Text(
-              "COPYRIGHT © CODAJOBS 2022 - PRESENT",
+              "COPYRIGHT © CARIJOBS 2024 - PRESENT",
               style: GoogleFonts.dmSans(
                 textStyle: FontThemeData.btnText,
                 color: (isDarkThemeOn)
